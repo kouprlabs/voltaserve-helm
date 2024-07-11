@@ -1,0 +1,53 @@
+# Copyright 2024 Piotr Łoboda.
+#
+# Use of this software is governed by the Business Source License
+# included in the file licenses/BSL.txt.
+#
+# As of the Change Date specified in that file, in accordance with
+# the Business Source License, use of this software will be governed
+# by the GNU Affero General Public License v3.0 only, included in the file
+# licenses/AGPL.txt.
+
+name: Build and Push Voltaserve official Helm Chart!
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "Chart.yaml"
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+          
+      - name: Set the tag
+        run: echo "TAG=$(cat Chart.yaml | awk '/^version:/ {print $2;exit}')" >> $GITHUB_ENV
+      
+      - name: Verify if the tag exists
+        run: |
+          tags=$(git tag -l)
+          echo $tags | grep -i -q  ${{ env.TAG }}
+          if [ $? -eq 1 ]; then
+            echo "This tag (${{ env.TAG }}) already exists!"
+            exit 1;
+          fi
+          
+      - name: Create release
+        uses: ncipollo/release-action@v1.14.0
+        with:
+          tag: ${{ env.TAG }}
+          
+      - name: Release Helm Chart
+        uses: appany/helm-oci-chart-releaser@v0.4.2
+        with:
+          name: ${{ matrix.chart }}
+          repository: kouprlabs/voltaserve-helm
+          tag: ${{ env.TAG }}
+          registry: ghcr.io
+          registry_username: ${{ github.actor }}
+          registry_password: ${{ github.token }}
+          update_dependencies: true
