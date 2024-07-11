@@ -1,0 +1,94 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "voltaserve.fullname" . }}-conversion
+  labels:
+    {{- include "voltaserve-conversion.labels" . | nindent 4 }}
+spec:
+  replicas: {{ default .Values.conversion.deployment.replicaCount 1}}
+  selector:
+    matchLabels:
+      {{- include "voltaserve-conversion.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/conversion/configmap.yaml") . | sha256sum }}
+        checksum/secrets: {{ include (print $.Template.BasePath "/conversion/secret.yaml") . | sha256sum }}
+        {{- with .Values.conversion.deployment.podAnnotations }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "voltaserve-conversion.labels" . | nindent 8 }}
+        {{- with .Values.conversion.deployment.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- if .Values.imagePullSecrets }}
+        {{- with .Values.imagePullSecrets }}
+        imagePullSecrets:
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- end }}
+      {{- if .Values.conversion.deployment.security }}
+      {{- if .Values.conversion.deployment.security.securityContext }}
+      securityContext:
+        {{- toYaml .Values.conversion.deployment.security.securityContext | nindent 8 }}
+      {{- end }}
+      {{- end }}
+      containers:
+        - name: {{ include "voltaserve.fullname" . }}
+          {{- if .Values.conversion.deployment.security }}
+          {{- if .Values.conversion.deployment.security.podSecurityContext }} 
+          securityContext:
+            {{- toYaml .Values.conversion.deployment.security.podSecurityContext | nindent 12 }}
+          {{- end }}
+          {{- end }}
+          {{- if .Values.conversion.image }}
+            image: {{ default .Values.conversion.image.repository "voltaserve/conversion" }}:{{ default .Values.conversion.deployment.tag "latest" }}
+          {{- else }}
+            image: voltaserve/conversion: {{ default .Chart.AppVersion "latest" }}
+          {{- end }}
+          imagePullPolicy: {{ .Values.conversion.deployment.imagePullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.conversion.service.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: {{ default .Values.conversion.deployment.livenessProbePath "/v2/health" }}
+              port: {{ .Values.conversion.service.targetPort }}
+            initialDelaySeconds: 300
+          readinessProbe:
+            httpGet:
+              path: {{ default .Values.conversion.deployment.readinessProbePath "/v2/health" }}
+              port: {{ .Values.conversion.service.targetPort }}
+            initialDelaySeconds: 15
+          {{- if .Values.conversion.deployment.resources }}
+          resources:
+            {{- toYaml .Values.conversion.deployment.resources | nindent 12 }}
+          {{- end }}
+          {{- with .Values.conversion.deployment.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          envFrom:
+          - configMapRef:
+              name: {{ include "voltaserve.fullname" . }}-conversion
+          - secretRef:
+              name: {{ include "voltaserve.fullname" . }}-conversion
+      {{- with .Values.conversion.deployment.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.conversion.deployment.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.conversion.deployment.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.conversion.deployment.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

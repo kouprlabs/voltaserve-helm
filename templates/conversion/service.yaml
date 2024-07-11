@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "voltaserve.fullname" . }}-conversion
+  labels:
+    {{- include "voltaserve-conversion.labels" . | nindent 4 }}
+spec:
+  ipFamilyPolicy: SingleStack
+  type: {{ .Values.conversion.service.type }}
+  clusterIP: "None"
+  ports:
+    - port: {{ .Values.conversion.service.port }}
+      targetPort: {{ .Values.conversion.service.targetPort }}
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "voltaserve-conversion.selectorLabels" . | nindent 6 }}

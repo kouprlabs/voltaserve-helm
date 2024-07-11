@@ -1,0 +1,94 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "voltaserve.fullname" . }}-mosaic
+  labels:
+    {{- include "voltaserve-mosaic.labels" . | nindent 4 }}
+spec:
+  replicas: {{ default .Values.mosaic.deployment.replicaCount 1}}
+  selector:
+    matchLabels:
+      {{- include "voltaserve-mosaic.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/idp/configmap.yaml") . | sha256sum }}
+        checksum/secrets: {{ include (print $.Template.BasePath "/idp/secret.yaml") . | sha256sum }}
+        {{- with .Values.mosaic.deployment.podAnnotations }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "voltaserve-mosaic.labels" . | nindent 8 }}
+        {{- with .Values.mosaic.deployment.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- if .Values.imagePullSecrets }}
+        {{- with .Values.imagePullSecrets }}
+        imagePullSecrets:
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- end }}
+      {{- if .Values.mosaic.deployment.security }}
+      {{- if .Values.mosaic.deployment.security.securityContext }}
+      securityContext:
+        {{- toYaml .Values.mosaic.deployment.security.securityContext | nindent 8 }}
+      {{- end }}
+      {{- end }}
+      containers:
+        - name: {{ include "voltaserve.fullname" . }}
+          {{- if .Values.mosaic.deployment.security }}
+          {{- if .Values.mosaic.deployment.security.podSecurityContext }} 
+          securityContext:
+            {{- toYaml .Values.mosaic.deployment.security.podSecurityContext | nindent 12 }}
+          {{- end }}
+          {{- end }}
+          {{- if .Values.mosaic.image }}
+            image: {{ default .Values.mosaic.image.repository "voltaserve/mosaic" }}:{{ default .Values.mosaic.deployment.tag "latest" }}
+          {{- else }}
+            image: voltaserve/mosaic: {{ default .Chart.AppVersion "latest" }}
+          {{- end }}
+          imagePullPolicy: {{ .Values.mosaic.deployment.imagePullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.mosaic.service.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: {{ default .Values.mosaic.deployment.livenessProbePath "/v2/health" }}
+              port: {{ .Values.mosaic.service.targetPort }}
+            initialDelaySeconds: 300
+          readinessProbe:
+            httpGet:
+              path: {{ default .Values.mosaic.deployment.readinessProbePath "/v2/health" }}
+              port: {{ .Values.mosaic.service.targetPort }}
+            initialDelaySeconds: 15
+          {{- if .Values.mosaic.deployment.resources }}
+          resources:
+            {{- toYaml .Values.mosaic.deployment.resources | nindent 12 }}
+          {{- end }}
+          {{- with .Values.mosaic.deployment.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          envFrom:
+          - configMapRef:
+              name: {{ include "voltaserve.fullname" . }}-mosaic
+          - secretRef:
+              name: {{ include "voltaserve.fullname" . }}-mosaic
+      {{- with .Values.mosaic.deployment.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.mosaic.deployment.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.mosaic.deployment.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.mosaic.deployment.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

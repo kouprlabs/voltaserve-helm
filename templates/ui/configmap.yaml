@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "voltaserve.fullname" . }}-ui
+data:
+  {{- if .Values.ui.envs }}
+    {{- range $k,$v := .Values.ui.envs }}
+      {{$k }}: {{ default "" $v | quote }}
+    {{- end }}
+  {{- end }}
+  API_URL: http://{{ include "voltaserve.fullname" . }}-api.{{.Release.Namespace}}.svc.cluster.local:8080
+  IDP_URL: http://{{ include "voltaserve.fullname" . }}-idp.{{.Release.Namespace}}.svc.cluster.local:8081

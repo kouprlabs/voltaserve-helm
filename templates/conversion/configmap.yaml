@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "voltaserve.fullname" . }}-conversion
+data:
+  {{- if .Values.conversion.envs }}
+    {{- range $k,$v := .Values.conversion.envs }}
+      {{$k }}: {{ default "" $v | quote }}
+    {{- end }}
+  {{- end }}
+  API_URL: http://{{ include "voltaserve.fullname" . }}-api.{{.Release.Namespace}}.svc.cluster.local:8080
+  LANGUAGE_URL: http://{{ include "voltaserve.fullname" . }}-language.{{.Release.Namespace}}.svc.cluster.local:8084
+  MOSAIC_URL: http://{{ include "voltaserve.fullname" . }}-mosaic.{{.Release.Namespace}}.svc.cluster.local:8085
+  PORT: {{ .Values.conversion.service.targetPort | quote }}
+  {{- if .Values.minio.enabled }}
+  S3_URL: {{ include "voltaserve.fullname" . }}-minio.{{ .Release.Namespace }}.svc.cluster.local:9000
+  {{- else }}
+  S3_URL: {{ .Values.general.envs.S3_URL }}
+  {{- end  }}
+  S3_SECURE: {{ .Values.general.envs.S3_SECURE | quote }}

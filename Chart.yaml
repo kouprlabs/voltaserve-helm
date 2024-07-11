@@ -1,0 +1,23 @@
+apiVersion: v2
+name: voltaserve
+description: A Helm chart for voltaserve
+type: application
+dependencies:
+  - name: redis
+    version: 19.6.1
+    repository: https://charts.bitnami.com/bitnami
+    condition: redis.enabled
+  - name: minio
+    version: 14.6.20
+    repository: https://charts.bitnami.com/bitnami
+    condition: minio.enabled
+  - name: cockroachdb
+    version: 13.0.2
+    repository: https://charts.cockroachdb.com/
+    condition: cockroachdb.enabled
+  - name: meilisearch
+    version: 0.8.0
+    repository: https://meilisearch.github.io/meilisearch-kubernetes
+    condition: meilisearch.enabled
+version: 0.2.0
+appVersion: "2.0.2"

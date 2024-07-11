@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "voltaserve.fullname" . }}-idp
+  labels:
+    {{- include "voltaserve-idp.labels" . | nindent 4 }}
+spec:
+  ipFamilyPolicy: SingleStack
+  type: {{ .Values.idp.service.type }}
+  clusterIP: "None"
+  ports:
+    - port: {{ .Values.idp.service.port }}
+      targetPort: {{ .Values.idp.service.targetPort }}
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "voltaserve-idp.selectorLabels" . | nindent 6 }}

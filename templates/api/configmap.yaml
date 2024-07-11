@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "voltaserve.fullname" . }}-api
+data:
+  {{- if .Values.api.envs }}
+    {{- range $k,$v := .Values.api.envs }}
+      {{ $k }}: {{ $v | quote }}
+    {{- end }}
+  {{- end }}
+  SMTP_HOST: {{ .Values.general.smtp.SMTP_HOST | quote }}
+  SMTP_PORT: {{ .Values.general.smtp.SMTP_PORT | quote }}
+  SMTP_SENDER_ADDRESS: {{ .Values.general.smtp.SMTP_SENDER_ADDRESS | quote }}
+  SMTP_SENDER_NAME: {{ .Values.general.smtp.SMTP_SENDER_NAME | quote }}
+  SMTP_SECURE: {{ .Values.general.smtp.SMTP_SECURE | quote }}
+  CONVERSION_URL: http://{{ include "voltaserve.fullname" . }}-conversion.{{.Release.Namespace}}.svc.cluster.local:8083
+  LANGUAGE_URL: http://{{ include "voltaserve.fullname" . }}-language.{{.Release.Namespace}}.svc.cluster.local:8084
+  MOSAIC_URL: http://{{ include "voltaserve.fullname" . }}-mosaic.{{.Release.Namespace}}.svc.cluster.local:8085
+  PORT: {{ .Values.api.service.targetPort | quote }}
+  {{- if .Values.ingress.enabled }}
+  PUBLIC_UI_URL: https://{{ .Values.ingress.host }}
+  SECURITY_CORS_ORIGINS: https://{{ .Values.ingress.host }}
+  {{- else }}
+  PUBLIC_UI_URL: {{ .Values.general.envs.PUBLIC_UI_URL }}
+  SECURITY_CORS_ORIGINS: {{ .Values.general.envs.PUBLIC_UI_URL }}
+  {{- end  }}
+  {{- if .Values.minio.enabled }}
+  S3_URL: {{ include "voltaserve.fullname" . }}-minio.{{ .Release.Namespace }}.svc.cluster.local:9000
+  {{- else }}
+  S3_URL: {{ .Values.general.envs.S3_URL }}
+  {{- end  }}
+  S3_SECURE: {{ .Values.general.envs.S3_SECURE | quote }}
+  {{- if .Values.redis.enabled }}
+  REDIS_ADDRESS: {{ include "voltaserve.fullname" . }}-redis-master.{{ .Release.Namespace }}.svc.cluster.local:6379
+  {{- else }}
+  REDIS_ADDRESS: {{ .Values.general.envs.REDIS_ADDRESS }}
+  {{- end  }}
+  {{- if .Values.cockroachdb.enabled }}
+  POSTGRES_URL: postgresql://voltaserve@{{ include "voltaserve.fullname" . }}-cockroachdb:26257/voltaserve # to be updated by user for dynamic parsing
+  {{- else }}
+  POSTGRES_URL: {{ .Values.general.envs.POSTGRES_URL }}
+  {{- end  }}
+  {{- if .Values.meilisearch.enabled }}
+  SEARCH_URL: http://{{ include "voltaserve.fullname" . }}-meilisearch.{{.Release.Namespace}}.svc.cluster.local:7700
+  {{- else }}
+  SEARCH_URL: {{ .Values.general.envs.SEARCH_URL }}
+  {{- end  }}

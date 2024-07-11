@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "voltaserve.fullname" . }}-mosaic
+  labels:
+    {{- include "voltaserve-mosaic.labels" . | nindent 4 }}
+spec:
+  ipFamilyPolicy: SingleStack
+  type: {{ .Values.mosaic.service.type }}
+  clusterIP: "None"
+  ports:
+    - port: {{ .Values.mosaic.service.port }}
+      targetPort: {{ .Values.mosaic.service.targetPort }}
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "voltaserve-mosaic.selectorLabels" . | nindent 6 }}

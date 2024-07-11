@@ -1,0 +1,15 @@
+dependencies:
+- name: redis
+  repository: https://charts.bitnami.com/bitnami
+  version: 19.6.1
+- name: minio
+  repository: https://charts.bitnami.com/bitnami
+  version: 14.6.19
+- name: cockroachdb
+  repository: https://charts.cockroachdb.com/
+  version: 13.0.1
+- name: meilisearch
+  repository: https://meilisearch.github.io/meilisearch-kubernetes
+  version: 0.8.0
+digest: sha256:ee6fbf984241479cf6ff6761e16410fe7fa59149982a90492a2c782e95382721
+generated: "2024-07-07T18:30:16.08052339+02:00"

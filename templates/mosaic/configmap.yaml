@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "voltaserve.fullname" . }}-mosaic
+data:
+  {{- if .Values.mosaic.envs }}
+    {{- range $k,$v := .Values.mosaic.envs }}
+      {{$k }}: {{ default "" $v | quote }}
+    {{- end }}
+  {{- end }}
+  PORT: {{ .Values.mosaic.service.targetPort | quote }}
+  {{- if .Values.minio.enabled }}
+  S3_URL: {{ include "voltaserve.fullname" . }}-minio.{{ .Release.Namespace }}.svc.cluster.local:9000
+  {{- else }}
+  S3_URL: {{ .Values.general.envs.S3_URL }}
+  {{- end  }}
+  S3_SECURE: {{ .Values.general.envs.S3_SECURE | quote }}
