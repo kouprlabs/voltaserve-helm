@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "voltaserve.fullname" . }}-api
+  name: {{ include "voltaserve-api.fullname" . }}
 data:
   {{- if .Values.api.envs }}
     {{- range $k,$v := .Values.api.envs }}
@@ -13,9 +13,9 @@ data:
   SMTP_SENDER_ADDRESS: {{ .Values.general.smtp.SMTP_SENDER_ADDRESS | quote }}
   SMTP_SENDER_NAME: {{ .Values.general.smtp.SMTP_SENDER_NAME | quote }}
   SMTP_SECURE: {{ .Values.general.smtp.SMTP_SECURE | quote }}
-  CONVERSION_URL: http://{{ include "voltaserve.fullname" . }}-conversion.{{.Release.Namespace}}.svc.cluster.local:{{ .Values.conversion.service.port }}
-  LANGUAGE_URL: http://{{ include "voltaserve.fullname" . }}-language.{{.Release.Namespace}}.svc.cluster.local:{{ .Values.language.service.port }}
-  MOSAIC_URL: http://{{ include "voltaserve.fullname" . }}-mosaic.{{.Release.Namespace}}.svc.cluster.local:{{ .Values.mosaic.service.port }}
+  CONVERSION_URL: http://{{ include "voltaserve-conversion.fullname" . }}.{{.Release.Namespace}}.svc.cluster.local:{{ .Values.conversion.service.port }}
+  LANGUAGE_URL: http://{{ include "voltaserve-language.fullname" . }}.{{.Release.Namespace}}.svc.cluster.local:{{ .Values.language.service.port }}
+  MOSAIC_URL: http://{{ include "voltaserve-mosaic.fullname" . }}.{{.Release.Namespace}}.svc.cluster.local:{{ .Values.mosaic.service.port }}
   {{- if .Values.ingress.enabled }}
   PUBLIC_UI_URL: https://{{ .Values.ingress.host }}
   SECURITY_CORS_ORIGINS: https://{{ .Values.ingress.host }}

@@ -1,16 +1,16 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "voltaserve.fullname" . }}-conversion
+  name: {{ include "voltaserve-conversion.fullname" . }}
 data:
   {{- if .Values.conversion.envs }}
     {{- range $k,$v := .Values.conversion.envs }}
       {{$k }}: {{ default "" $v | quote }}
     {{- end }}
   {{- end }}
-  API_URL: http://{{ include "voltaserve.fullname" . }}-api.{{.Release.Namespace}}.svc.cluster.local:{{ .Values.api.service.port }}
-  LANGUAGE_URL: http://{{ include "voltaserve.fullname" . }}-language.{{.Release.Namespace}}.svc.cluster.local:{{ .Values.language.service.port }}
-  MOSAIC_URL: http://{{ include "voltaserve.fullname" . }}-mosaic.{{.Release.Namespace}}.svc.cluster.local:{{ .Values.mosaic.service.port }}
+  API_URL: http://{{ include "voltaserve-api.fullname" . }} .{{.Release.Namespace}}.svc.cluster.local:{{ .Values.api.service.port }}
+  LANGUAGE_URL: http://{{ include "voltaserve-language.fullname" . }}.{{.Release.Namespace}}.svc.cluster.local:{{ .Values.language.service.port }}
+  MOSAIC_URL: http://{{ include "voltaserve-mosaic.fullname" . }}.{{.Release.Namespace}}.svc.cluster.local:{{ .Values.mosaic.service.port }}
   {{- if .Values.minio.enabled }}
   S3_URL: {{ include "voltaserve.fullname" . }}-minio.{{ .Release.Namespace }}.svc.cluster.local:9000
   {{- else }}

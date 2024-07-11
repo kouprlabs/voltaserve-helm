@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "voltaserve.fullname" . }}-mosaic
+  name: {{ include "voltaserve-mosaic.fullname" . }}
   labels:
     {{- include "voltaserve-mosaic.labels" . | nindent 4 }}
 spec:

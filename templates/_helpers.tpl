@@ -24,6 +24,32 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 
 {{/*
+Create the component specific names.
+We truncate the common name more because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "voltaserve-api.fullname" -}}
+{{- printf "%s-api" ( include "voltaserve.fullname" . | trunc 50 ) }}
+{{- end }}
+{{- define "voltaserve-idp.fullname" -}}
+{{- printf "%s-idp" ( include "voltaserve.fullname" . | trunc 50 ) }}
+{{- end }}
+{{- define "voltaserve-ui.fullname" -}}
+{{- printf "%s-ui" ( include "voltaserve.fullname" . | trunc 50 ) }}
+{{- end }}
+{{- define "voltaserve-language.fullname" -}}
+{{- printf "%s-language" ( include "voltaserve.fullname" . | trunc 50 ) }}
+{{- end }}
+{{- define "voltaserve-conversion.fullname" -}}
+{{- printf "%s-conversion" ( include "voltaserve.fullname" . | trunc 50 ) }}
+{{- end }}
+{{- define "voltaserve-mosaic.fullname" -}}
+{{- printf "%s-mosaic" ( include "voltaserve.fullname" . | trunc 50 ) }}
+{{- end }}
+{{- define "voltaserve-webdav.fullname" -}}
+{{- printf "%s-webdav" ( include "voltaserve.fullname" . | trunc 50 ) }}
+{{- end }}
+
+{{/*
 Create chart name and version as used by the chart label.
 */}}
 {{- define "voltaserve.chart" -}}

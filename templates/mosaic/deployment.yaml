@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "voltaserve.fullname" . }}-mosaic
+  name: {{ include "voltaserve-mosaic.fullname" . }}
   labels:
     {{- include "voltaserve-mosaic.labels" . | nindent 4 }}
 spec:
@@ -36,7 +36,7 @@ spec:
       {{- end }}
       {{- end }}
       containers:
-        - name: {{ include "voltaserve.fullname" . }}-mosaic
+        - name: main
           {{- if .Values.mosaic.deployment.security }}
           {{- if .Values.mosaic.deployment.security.podSecurityContext }} 
           securityContext:
@@ -69,9 +69,9 @@ spec:
           {{- end }}
           envFrom:
           - configMapRef:
-              name: {{ include "voltaserve.fullname" . }}-mosaic
+              name: {{ include "voltaserve-mosaic.fullname" . }}
           - secretRef:
-              name: {{ include "voltaserve.fullname" . }}-mosaic
+              name: {{ include "voltaserve-mosaic.fullname" . }}
       {{- with .Values.mosaic.deployment.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}
