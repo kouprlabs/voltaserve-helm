@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "voltaserve-language.labels" . | nindent 4 }}
 spec:
-  replicas: {{ default .Values.language.deployment.replicaCount 1}}
+  replicas: {{ .Values.language.deployment.replicaCount | default 1}}
   selector:
     matchLabels:
       {{- include "voltaserve-language.selectorLabels" . | nindent 6 }}
@@ -34,18 +34,14 @@ spec:
       {{- end }}
       {{- end }}
       containers:
-        - name: {{ include "voltaserve.fullname" . }}
+        - name: {{ include "voltaserve.fullname" . }}-language
           {{- if .Values.language.deployment.security }}
           {{- if .Values.language.deployment.security.podSecurityContext }} 
           securityContext:
             {{- toYaml .Values.language.deployment.security.podSecurityContext | nindent 12 }}
           {{- end }}
           {{- end }}
-          {{- if .Values.language.image }}
-            image: {{ default .Values.language.image.repository "voltaserve/language" }}:{{ default .Values.language.deployment.tag "latest" }}
-          {{- else }}
-            image: voltaserve/language: {{ default .Chart.AppVersion "latest" }}
-          {{- end }}
+          image: {{ .Values.language.image.repository | default "voltaserve/idp" }}:{{ .Values.language.image.tag | default .Chart.AppVersion }}
           imagePullPolicy: {{ .Values.language.deployment.imagePullPolicy }}
           ports:
             - name: http
@@ -53,12 +49,12 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: {{ default .Values.language.deployment.livenessProbePath "/v2/health" }}
+              path: {{ .Values.language.deployment.livenessProbePath | default "/v2/health" }}
               port: {{ .Values.language.service.targetPort }}
             initialDelaySeconds: 300
           readinessProbe:
             httpGet:
-              path: {{ default .Values.language.deployment.readinessProbePath "/v2/health" }}
+              path: {{ .Values.language.deployment.readinessProbePath | default "/v2/health" }}
               port: {{ .Values.language.service.targetPort }}
             initialDelaySeconds: 15
           {{- if .Values.language.deployment.resources }}

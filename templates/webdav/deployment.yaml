@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "voltaserve-webdav.labels" . | nindent 4 }}
 spec:
-  replicas: {{ default .Values.webdav.deployment.replicaCount 1}}
+  replicas: {{ .Values.webdav.deployment.replicaCount | default 1}}
   selector:
     matchLabels:
       {{- include "voltaserve-webdav.selectorLabels" . | nindent 6 }}
@@ -35,18 +35,14 @@ spec:
       {{- end }}
       {{- end }}
       containers:
-        - name: {{ include "voltaserve.fullname" . }}
+        - name: {{ include "voltaserve.fullname" . }}-webdav
           {{- if .Values.webdav.deployment.security }}
           {{- if .Values.webdav.deployment.security.podSecurityContext }} 
           securityContext:
             {{- toYaml .Values.webdav.deployment.security.podSecurityContext | nindent 12 }}
           {{- end }}
           {{- end }}
-          {{- if .Values.webdav.image }}
-            image: {{ default .Values.webdav.image.repository "voltaserve/webdav" }}:{{ default .Values.webdav.deployment.tag "latest" }}
-          {{- else }}
-            image: voltaserve/webdav: {{ default .Chart.AppVersion "latest" }}
-          {{- end }}
+          image: {{ .Values.webdav.image.repository | default "voltaserve/webdav" }}:{{ .Values.webdav.image.tag | default .Chart.AppVersion }}
           imagePullPolicy: {{ .Values.webdav.deployment.imagePullPolicy }}
           ports:
             - name: http
@@ -54,12 +50,12 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: {{ default .Values.webdav.deployment.livenessProbePath "/v2/health" }}
+              path: {{ .Values.webdav.deployment.livenessProbePath | default "/v2/health" }}
               port: {{ .Values.webdav.service.targetPort }}
             initialDelaySeconds: 300
           readinessProbe:
             httpGet:
-              path: {{ default .Values.webdav.deployment.readinessProbePath "/v2/health" }}
+              path: {{ .Values.webdav.deployment.readinessProbePath | default "/v2/health" }}
               port: {{ .Values.webdav.service.targetPort }}
             initialDelaySeconds: 15
           {{- if .Values.webdav.deployment.resources }}

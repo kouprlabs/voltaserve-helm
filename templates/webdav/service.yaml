@@ -10,7 +10,7 @@ spec:
   clusterIP: "None"
   ports:
     - port: {{ .Values.webdav.service.port }}
-      targetPort: {{ .Values.webdav.service.targetPort }}
+      targetPort: 8082
       protocol: TCP
       name: http
   selector:

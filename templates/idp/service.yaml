@@ -10,7 +10,7 @@ spec:
   clusterIP: "None"
   ports:
     - port: {{ .Values.idp.service.port }}
-      targetPort: {{ .Values.idp.service.targetPort }}
+      targetPort: 8081
       protocol: TCP
       name: http
   selector:

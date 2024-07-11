@@ -13,10 +13,9 @@ data:
   SMTP_SENDER_ADDRESS: {{ .Values.general.smtp.SMTP_SENDER_ADDRESS | quote }}
   SMTP_SENDER_NAME: {{ .Values.general.smtp.SMTP_SENDER_NAME | quote }}
   SMTP_SECURE: {{ .Values.general.smtp.SMTP_SECURE | quote }}
-  CONVERSION_URL: http://{{ include "voltaserve.fullname" . }}-conversion.{{.Release.Namespace}}.svc.cluster.local:8083
-  LANGUAGE_URL: http://{{ include "voltaserve.fullname" . }}-language.{{.Release.Namespace}}.svc.cluster.local:8084
-  MOSAIC_URL: http://{{ include "voltaserve.fullname" . }}-mosaic.{{.Release.Namespace}}.svc.cluster.local:8085
-  PORT: {{ .Values.api.service.targetPort | quote }}
+  CONVERSION_URL: http://{{ include "voltaserve.fullname" . }}-conversion.{{.Release.Namespace}}.svc.cluster.local:{{ .Values.conversion.service.port }}
+  LANGUAGE_URL: http://{{ include "voltaserve.fullname" . }}-language.{{.Release.Namespace}}.svc.cluster.local:{{ .Values.language.service.port }}
+  MOSAIC_URL: http://{{ include "voltaserve.fullname" . }}-mosaic.{{.Release.Namespace}}.svc.cluster.local:{{ .Values.mosaic.service.port }}
   {{- if .Values.ingress.enabled }}
   PUBLIC_UI_URL: https://{{ .Values.ingress.host }}
   SECURITY_CORS_ORIGINS: https://{{ .Values.ingress.host }}
@@ -31,7 +30,7 @@ data:
   {{- end  }}
   S3_SECURE: {{ .Values.general.envs.S3_SECURE | quote }}
   {{- if .Values.redis.enabled }}
-  REDIS_ADDRESS: {{ include "voltaserve.fullname" . }}-redis-master.{{ .Release.Namespace }}.svc.cluster.local:6379
+  REDIS_ADDRESS: {{ include "voltaserve.fullname" . }}-redis-master.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.redis.master.service.ports.redis | default 6379 }}
   {{- else }}
   REDIS_ADDRESS: {{ .Values.general.envs.REDIS_ADDRESS }}
   {{- end  }}
@@ -41,7 +40,7 @@ data:
   POSTGRES_URL: {{ .Values.general.envs.POSTGRES_URL }}
   {{- end  }}
   {{- if .Values.meilisearch.enabled }}
-  SEARCH_URL: http://{{ include "voltaserve.fullname" . }}-meilisearch.{{.Release.Namespace}}.svc.cluster.local:7700
+  SEARCH_URL: http://{{ include "voltaserve.fullname" . }}-meilisearch.{{.Release.Namespace}}.svc.cluster.local:{{ .Values.meilisearch.service.port | default 7700 }}
   {{- else }}
   SEARCH_URL: {{ .Values.general.envs.SEARCH_URL }}
   {{- end  }}

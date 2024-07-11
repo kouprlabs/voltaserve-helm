@@ -10,7 +10,7 @@ spec:
   clusterIP: "None"
   ports:
     - port: {{ .Values.mosaic.service.port }}
-      targetPort: {{ .Values.mosaic.service.targetPort }}
+      targetPort: 8085
       protocol: TCP
       name: http
   selector:

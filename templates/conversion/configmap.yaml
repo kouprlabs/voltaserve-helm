@@ -8,10 +8,9 @@ data:
       {{$k }}: {{ default "" $v | quote }}
     {{- end }}
   {{- end }}
-  API_URL: http://{{ include "voltaserve.fullname" . }}-api.{{.Release.Namespace}}.svc.cluster.local:8080
-  LANGUAGE_URL: http://{{ include "voltaserve.fullname" . }}-language.{{.Release.Namespace}}.svc.cluster.local:8084
-  MOSAIC_URL: http://{{ include "voltaserve.fullname" . }}-mosaic.{{.Release.Namespace}}.svc.cluster.local:8085
-  PORT: {{ .Values.conversion.service.targetPort | quote }}
+  API_URL: http://{{ include "voltaserve.fullname" . }}-api.{{.Release.Namespace}}.svc.cluster.local:{{ .Values.api.service.port }}
+  LANGUAGE_URL: http://{{ include "voltaserve.fullname" . }}-language.{{.Release.Namespace}}.svc.cluster.local:{{ .Values.language.service.port }}
+  MOSAIC_URL: http://{{ include "voltaserve.fullname" . }}-mosaic.{{.Release.Namespace}}.svc.cluster.local:{{ .Values.mosaic.service.port }}
   {{- if .Values.minio.enabled }}
   S3_URL: {{ include "voltaserve.fullname" . }}-minio.{{ .Release.Namespace }}.svc.cluster.local:9000
   {{- else }}

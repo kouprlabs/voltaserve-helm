@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "voltaserve-idp.labels" . | nindent 4 }}
 spec:
-  replicas: {{ default .Values.idp.deployment.replicaCount 1}}
+  replicas: {{ .Values.idp.deployment.replicaCount | default 1}}
   selector:
     matchLabels:
       {{- include "voltaserve-idp.selectorLabels" . | nindent 6 }}
@@ -36,18 +36,14 @@ spec:
       {{- end }}
       {{- end }}
       containers:
-        - name: {{ include "voltaserve.fullname" . }}
+        - name: {{ include "voltaserve.fullname" . }}-idp
           {{- if .Values.idp.deployment.security }}
           {{- if .Values.idp.deployment.security.podSecurityContext }} 
           securityContext:
             {{- toYaml .Values.idp.deployment.security.podSecurityContext | nindent 12 }}
           {{- end }}
           {{- end }}
-          {{- if .Values.idp.image }}
-            image: {{ default .Values.idp.image.repository "voltaserve/idp" }}:{{ default .Values.idp.deployment.tag "latest" }}
-          {{- else }}
-            image: voltaserve/idp: {{ default .Chart.AppVersion "latest" }}
-          {{- end }}
+          image: {{ .Values.idp.image.repository | default "voltaserve/idp" }}:{{ .Values.idp.image.tag | default .Chart.AppVersion }}
           imagePullPolicy: {{ .Values.idp.deployment.imagePullPolicy }}
           ports:
             - name: http
@@ -55,12 +51,12 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: {{ default .Values.idp.deployment.livenessProbePath "/v2/health" }}
+              path: {{ .Values.idp.deployment.livenessProbePath | default "/v2/health" }}
               port: {{ .Values.idp.service.targetPort }}
             initialDelaySeconds: 300
           readinessProbe:
             httpGet:
-              path: {{ default .Values.idp.deployment.readinessProbePath "/v2/health" }}
+              path: {{ .Values.idp.deployment.readinessProbePath | default "/v2/health" }}
               port: {{ .Values.idp.service.targetPort }}
             initialDelaySeconds: 15
           {{- if .Values.idp.deployment.resources }}

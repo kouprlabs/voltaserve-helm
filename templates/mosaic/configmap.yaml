@@ -8,7 +8,6 @@ data:
       {{$k }}: {{ default "" $v | quote }}
     {{- end }}
   {{- end }}
-  PORT: {{ .Values.mosaic.service.targetPort | quote }}
   {{- if .Values.minio.enabled }}
   S3_URL: {{ include "voltaserve.fullname" . }}-minio.{{ .Release.Namespace }}.svc.cluster.local:9000
   {{- else }}

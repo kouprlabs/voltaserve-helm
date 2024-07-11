@@ -10,7 +10,7 @@ spec:
   clusterIP: "None"
   ports:
     - port: {{ .Values.language.service.port }}
-      targetPort: {{ .Values.language.service.targetPort }}
+      targetPort: 8084
       protocol: TCP
       name: http
   selector:

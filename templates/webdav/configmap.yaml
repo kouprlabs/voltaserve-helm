@@ -8,7 +8,6 @@ data:
       {{$k }}: {{ default "" $v | quote }}
     {{- end }}
   {{- end }}
-  PORT: {{ .Values.webdav.service.targetPort | quote }}
-  IDP_URL: http://{{ include "voltaserve.fullname" . }}-idp.{{ .Release.Namespace }}.svc.cluster.local:8081
-  API_URL: http://{{ include "voltaserve.fullname" . }}-api.{{ .Release.Namespace }}.svc.cluster.local:8080
+  IDP_URL: http://{{ include "voltaserve.fullname" . }}-idp.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.idp.service.port }}
+  API_URL: http://{{ include "voltaserve.fullname" . }}-api.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.api.service.port }}
 

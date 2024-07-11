@@ -10,7 +10,7 @@ spec:
   clusterIP: "None"
   ports:
     - port: {{ .Values.ui.service.port }}
-      targetPort: {{ .Values.ui.service.targetPort }}
+      targetPort: 3000
       protocol: TCP
       name: http
   selector:

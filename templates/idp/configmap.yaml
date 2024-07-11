@@ -15,7 +15,7 @@ data:
   SMTP_SENDER_NAME: {{ .Values.general.smtp.SMTP_SENDER_NAME | quote}}
   SMTP_SECURE: {{ .Values.general.smtp.SMTP_SECURE | quote }}
   {{- if .Values.meilisearch.enabled }}
-  SEARCH_URL: http://{{ include "voltaserve.fullname" . }}-meilisearch.{{.Release.Namespace}}.svc.cluster.local:7700
+  SEARCH_URL: http://{{ include "voltaserve.fullname" . }}-meilisearch.{{.Release.Namespace}}.svc.cluster.local:{{ default .Values.meilisearch.service.port 7700 }}
   {{- else }}
   SEARCH_URL: {{ .Values.general.envs.SEARCH_URL }}
   {{- end  }}
@@ -24,7 +24,6 @@ data:
   {{- else }}
   POSTGRES_URL: {{ .Values.general.envs.POSTGRES_URL }}
   {{- end  }}
-  PORT: {{ .Values.idp.service.targetPort | quote }}
   {{- if .Values.ingress.enabled }}
   PUBLIC_UI_URL: https://{{ .Values.ingress.host }}
   TOKEN_ISSUER: https://{{ .Values.ingress.host }}

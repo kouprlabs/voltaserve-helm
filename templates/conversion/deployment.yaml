@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "voltaserve-conversion.labels" . | nindent 4 }}
 spec:
-  replicas: {{ default .Values.conversion.deployment.replicaCount 1}}
+  replicas: {{ .Values.conversion.deployment.replicaCount | default 1}}
   selector:
     matchLabels:
       {{- include "voltaserve-conversion.selectorLabels" . | nindent 6 }}
@@ -36,18 +36,14 @@ spec:
       {{- end }}
       {{- end }}
       containers:
-        - name: {{ include "voltaserve.fullname" . }}
+        - name: {{ include "voltaserve.fullname" . }}-conversion
           {{- if .Values.conversion.deployment.security }}
           {{- if .Values.conversion.deployment.security.podSecurityContext }} 
           securityContext:
             {{- toYaml .Values.conversion.deployment.security.podSecurityContext | nindent 12 }}
           {{- end }}
           {{- end }}
-          {{- if .Values.conversion.image }}
-            image: {{ default .Values.conversion.image.repository "voltaserve/conversion" }}:{{ default .Values.conversion.deployment.tag "latest" }}
-          {{- else }}
-            image: voltaserve/conversion: {{ default .Chart.AppVersion "latest" }}
-          {{- end }}
+          image: {{ .Values.conversion.image.repository | default "voltaserve/conversion" }}:{{ .Values.conversion.image.tag | default .Chart.AppVersion }}
           imagePullPolicy: {{ .Values.conversion.deployment.imagePullPolicy }}
           ports:
             - name: http
@@ -55,12 +51,12 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: {{ default .Values.conversion.deployment.livenessProbePath "/v2/health" }}
+              path: {{ .Values.conversion.deployment.livenessProbePath | default "/v2/health" }}
               port: {{ .Values.conversion.service.targetPort }}
             initialDelaySeconds: 300
           readinessProbe:
             httpGet:
-              path: {{ default .Values.conversion.deployment.readinessProbePath "/v2/health" }}
+              path: {{ .Values.conversion.deployment.readinessProbePath | default "/v2/health" }}
               port: {{ .Values.conversion.service.targetPort }}
             initialDelaySeconds: 15
           {{- if .Values.conversion.deployment.resources }}

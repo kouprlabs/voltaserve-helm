@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "voltaserve-ui.labels" . | nindent 4 }}
 spec:
-  replicas: {{ default .Values.ui.deployment.replicaCount 1}}
+  replicas: {{ .Values.ui.deployment.replicaCount | default 1}}
   selector:
     matchLabels:
       {{- include "voltaserve-ui.selectorLabels" . | nindent 6 }}
@@ -35,18 +35,14 @@ spec:
       {{- end }}
       {{- end }}
       containers:
-        - name: {{ include "voltaserve.fullname" . }}
+        - name: {{ include "voltaserve.fullname" . }}-ui
           {{- if .Values.ui.deployment.security }}
           {{- if .Values.ui.deployment.security.podSecurityContext }} 
           securityContext:
             {{- toYaml .Values.ui.deployment.security.podSecurityContext | nindent 12 }}
           {{- end }}
           {{- end }}
-          {{- if .Values.ui.image }}
-            image: {{ default .Values.ui.image.repository "voltaserve/ui" }}:{{ default .Values.ui.deployment.tag "latest" }}
-          {{- else }}
-            image: voltaserve/ui: {{ default .Chart.AppVersion "latest" }}
-          {{- end }}
+          image: {{ .Values.ui.image.repository | default "voltaserve/ui" }}:{{ .Values.ui.image.tag | default .Chart.AppVersion }}
           imagePullPolicy: {{ .Values.ui.deployment.imagePullPolicy }}
           ports:
             - name: http
@@ -54,12 +50,12 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: {{ default .Values.ui.deployment.livenessProbePath "/v2/health" }}
+              path: {{ .Values.ui.deployment.livenessProbePath | default "/v2/health" }}
               port: {{ .Values.ui.service.targetPort }}
             initialDelaySeconds: 300
           readinessProbe:
             httpGet:
-              path: {{ default .Values.ui.deployment.readinessProbePath "/v2/health" }}
+              path: {{ .Values.ui.deployment.readinessProbePath | default "/v2/health" }}
               port: {{ .Values.ui.service.targetPort }}
             initialDelaySeconds: 15
           {{- if .Values.ui.deployment.resources }}

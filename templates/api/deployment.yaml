@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "voltaserve-api.labels" . | nindent 4 }}
 spec:
-  replicas: {{ default .Values.api.deployment.replicaCount 1}}
+  replicas: {{ .Values.api.deployment.replicaCount | default 1}}
   selector:
     matchLabels:
       {{- include "voltaserve-api.selectorLabels" . | nindent 6 }}
@@ -36,19 +36,14 @@ spec:
       {{- end }}
       {{- end }}
       containers:
-        - name: {{ include "voltaserve.fullname" . }}
+        - name: {{ include "voltaserve.fullname" . }}-api
           {{- if .Values.api.deployment.security }}
           {{- if .Values.api.deployment.security.podSecurityContext }} 
           securityContext:
             {{- toYaml .Values.api.deployment.security.podSecurityContext | nindent 12 }}
           {{- end }}
           {{- end }}
-          {{- if .Values.api.image }}
-            image: {{ default .Values.api.image.repository "voltaserve/api" }}:{{ default .Values.api.deployment.tag "latest" }}
-          {{- else }}
-            image: voltaserve/api: {{ default .Chart.AppVersion "latest" }}
-          {{- end }}
-          tag:
+          image: {{ .Values.api.image.repository | default "voltaserve/api" }}:{{ .Values.api.image.tag | default .Chart.AppVersion }}
           imagePullPolicy: {{ .Values.api.deployment.imagePullPolicy }}
           ports:
             - name: http
@@ -56,12 +51,12 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: {{ default .Values.api.deployment.livenessProbePath "/v2/health" }}
+              path: {{ .Values.api.deployment.livenessProbePath | default "/v2/health" }}
               port: {{ .Values.api.service.targetPort }}
             initialDelaySeconds: 300
           readinessProbe:
             httpGet:
-              path: {{ default .Values.api.deployment.readinessProbePath "/v2/health" }}
+              path: {{ .Values.api.deployment.readinessProbePath | default "/v2/health" }}
               port: {{ .Values.api.service.targetPort }}
             initialDelaySeconds: 15
           {{- if .Values.api.deployment.resources }}
