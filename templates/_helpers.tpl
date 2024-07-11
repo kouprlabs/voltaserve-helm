@@ -102,33 +102,37 @@ Deployment specific labels
 {{/*
 Selector labels
 */}}
+{{- define "voltaserve.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "voltaserve.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
 {{- define "voltaserve-api.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "voltaserve.name" . }}-api
-app.kubernetes.io/instance: {{ .Release.Name }}-api
+{{ include "voltaserve.selectorLabels" . }}
+app.kubernetes.io/component: api
 {{- end }}
 {{- define "voltaserve-conversion.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "voltaserve.name" . }}-conversion
-app.kubernetes.io/instance: {{ .Release.Name }}-conversion
+{{ include "voltaserve.selectorLabels" . }}
+app.kubernetes.io/component: conversion
 {{- end }}
 {{- define "voltaserve-ui.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "voltaserve.name" . }}-ui
-app.kubernetes.io/instance: {{ .Release.Name }}-ui
+{{ include "voltaserve.selectorLabels" . }}
+app.kubernetes.io/component: ui
 {{- end }}
 {{- define "voltaserve-idp.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "voltaserve.name" . }}-idp
-app.kubernetes.io/instance: {{ .Release.Name }}-idp
+{{ include "voltaserve.selectorLabels" . }}
+app.kubernetes.io/component: idp
 {{- end }}
 {{- define "voltaserve-language.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "voltaserve.name" . }}-language
-app.kubernetes.io/instance: {{ .Release.Name }}-language
+{{ include "voltaserve.selectorLabels" . }}
+app.kubernetes.io/component: language
 {{- end }}
 {{- define "voltaserve-mosaic.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "voltaserve.name" . }}-mosaic
-app.kubernetes.io/instance: {{ .Release.Name }}-mosaic
+{{ include "voltaserve.selectorLabels" . }}
+app.kubernetes.io/component: mosaic
 {{- end }}
 {{- define "voltaserve-webdav.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "voltaserve.name" . }}-webdav
-app.kubernetes.io/instance: {{ .Release.Name }}-webdav
+{{ include "voltaserve.selectorLabels" . }}
+app.kubernetes.io/component: webdav
 {{- end }}
 
 {{/*
