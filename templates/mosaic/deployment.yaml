@@ -44,20 +44,20 @@ spec:
           {{- end }}
           {{- end }}
           image: {{ .Values.mosaic.image.repository | default "voltaserve/mosaic" }}:{{ .Values.mosaic.image.tag | default .Chart.AppVersion }}
-          imagePullPolicy: {{ .Values.mosaic.deployment.imagePullPolicy }}
+          imagePullPolicy: {{ .Values.mosaic.deployment.imagePullPolicy | default "IfNotPresent" }}
           ports:
             - name: http
-              containerPort: {{ .Values.mosaic.service.port }}
+              containerPort: 8085
               protocol: TCP
           livenessProbe:
             httpGet:
               path: {{ .Values.mosaic.deployment.livenessProbePath | default "/v2/health" }}
-              port: {{ .Values.mosaic.service.targetPort }}
+              port: 8085
             initialDelaySeconds: 300
           readinessProbe:
             httpGet:
               path: {{  .Values.mosaic.deployment.readinessProbePath | default "/v2/health" }}
-              port: {{ .Values.mosaic.service.targetPort }}
+              port: 8085
             initialDelaySeconds: 15
           {{- if .Values.mosaic.deployment.resources }}
           resources:

@@ -44,20 +44,20 @@ spec:
           {{- end }}
           {{- end }}
           image: {{ .Values.idp.image.repository | default "voltaserve/idp" }}:{{ .Values.idp.image.tag | default .Chart.AppVersion }}
-          imagePullPolicy: {{ .Values.idp.deployment.imagePullPolicy }}
+          imagePullPolicy: {{ .Values.idp.deployment.imagePullPolicy | default "IfNotPresent" }}
           ports:
             - name: http
-              containerPort: {{ .Values.idp.service.port }}
+              containerPort: 8081
               protocol: TCP
           livenessProbe:
             httpGet:
               path: {{ .Values.idp.deployment.livenessProbePath | default "/v2/health" }}
-              port: {{ .Values.idp.service.targetPort }}
+              port: 8081
             initialDelaySeconds: 300
           readinessProbe:
             httpGet:
               path: {{ .Values.idp.deployment.readinessProbePath | default "/v2/health" }}
-              port: {{ .Values.idp.service.targetPort }}
+              port: 8081
             initialDelaySeconds: 15
           {{- if .Values.idp.deployment.resources }}
           resources:

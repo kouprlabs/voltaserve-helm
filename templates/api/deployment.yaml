@@ -44,20 +44,20 @@ spec:
           {{- end }}
           {{- end }}
           image: {{ .Values.api.image.repository | default "voltaserve/api" }}:{{ .Values.api.image.tag | default .Chart.AppVersion }}
-          imagePullPolicy: {{ .Values.api.deployment.imagePullPolicy }}
+          imagePullPolicy: {{ .Values.api.deployment.imagePullPolicy | default "IfNotPresent" }}
           ports:
             - name: http
-              containerPort: {{ .Values.api.service.port }}
+              containerPort: 8080
               protocol: TCP
           livenessProbe:
             httpGet:
               path: {{ .Values.api.deployment.livenessProbePath | default "/v2/health" }}
-              port: {{ .Values.api.service.targetPort }}
+              port: 8080
             initialDelaySeconds: 300
           readinessProbe:
             httpGet:
               path: {{ .Values.api.deployment.readinessProbePath | default "/v2/health" }}
-              port: {{ .Values.api.service.targetPort }}
+              port: 8080
             initialDelaySeconds: 15
           {{- if .Values.api.deployment.resources }}
           resources:

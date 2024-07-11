@@ -1,0 +1,354 @@
+ingress:
+    enabled: true
+    host: ui.public.url
+    webdavHost: webdav.public.url
+    className: nginx-public
+    annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-http01
+        nginx.ingress.kubernetes.io/rewrite-target: /
+        nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+        nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+        nginx.ingress.kubernetes.io/proxy-body-size: 512m
+        nginx.ingress.kubernetes.io/server-snippets: '
+            location / {
+                proxysetheader Upgrade $httpupgrade;
+                proxyhttpversion 1.1;
+                proxysetheader X-Forwarded-Host $httphost;
+                proxysetheader X-Forwarded-Proto $scheme;
+                proxysetheader X-Forwarded-For $remoteaddr;
+                proxysetheader Host $host;
+                proxysetheader Connection "upgrade";
+                proxycachebypass $httpupgrade;
+            }'
+    tls: true
+
+imagePullSecrets: []
+
+general:
+    smtp:
+        SMTP_HOST: "YOUR.SMTP.HOST"
+        SMTP_PORT: "SMTP PORT"
+        SMTP_SENDER_ADDRESS: "voltaserve-noreply@YOUR.SMTP.HOST"
+        SMTP_SENDER_NAME: "Voltaserve"
+        SMTP_SECURE: false
+    envs:
+        S3_URL: "YOUR OWN S3 URL"
+        S3_REGION: REGION_THAT_MINIO_WILL_PROVISION
+        S3_SECURE: false
+        POSTGRES_URL: "PSQL connection string for cockroach databse"
+        PUBLIC_UI_URL: Your public url if you don't use ingress from our chart
+        REDIS_ADDRESS: Your redis instance url
+        SEARCH_URL: Your meilisearch instance
+        TOKEN_ISSUER: "localhost"
+        TOKEN_AUDIENCE: "localhost"
+        TOKEN_ACCESS_TOKEN_LIFETIME: 86400
+        TOKEN_REFRESH_TOKEN_LIFETIME: 2592000
+    secrets:
+        SMTP_USERNAME: "SMTP USERNAME"
+        SMTP_PASSWORD: "SMTP PASSWORD"
+        SECURITY_JWT_SIGNING_KEY: &jwt_signing_key "FIXED JWT SIGNING KEY"
+        SECURITY_API_KEY: "SECURITY APIKEY"
+        S3_ACCESS_KEY: voltaserve
+        S3_SECRET_KEY: voltaserve
+
+api:
+    image:
+        repository: null
+        tag: null
+    service:
+        port: 8080
+        type: ClusterIP
+    envs:
+        {}
+    deployment:
+        imagePullPolicy:
+        replicaCount: 1
+        podAnnotations:
+            {}
+        podLabels:
+            {}
+        livenessProbePath: null
+        readinessProbePath: null
+        security:
+            securityContext:
+                {}
+            podSecurityContext:
+                {}
+        resources:
+            {}
+        volumeMounts:
+            {}
+        volumes:
+            {}
+        nodeSelector:
+            {}
+        affinity:
+            {}
+        tolerations:
+            {}
+
+    
+conversion:
+    image:
+        repository: null
+        tag: null
+    service:
+        port: 8083
+        type: ClusterIP
+    envs:
+        {}
+    deployment:
+        imagePullPolicy:
+        replicaCount: 1
+        podAnnotations:
+            {}
+        podLabels:
+            {}
+        livenessProbePath: null
+        readinessProbePath: null
+        security:
+            securityContext:
+                {}
+            podSecurityContext:
+                {}
+        resources:
+            {}
+        volumeMounts:
+            {}
+        volumes:
+            {}
+        nodeSelector:
+            {}
+        affinity:
+            {}
+        tolerations:
+            {}
+
+idp:
+    image:
+        repository: null
+        tag: null
+    service:
+        port: 8081
+        type: ClusterIP
+    envs:
+        {}
+    deployment:
+        imagePullPolicy:
+        replicaCount: 1
+        podAnnotations:
+            {}
+        podLabels:
+            {}
+        livenessProbePath: null
+        readinessProbePath: null
+        security:
+            securityContext:
+                {}
+            podSecurityContext:
+                {}
+        resources:
+            {}
+        volumeMounts:
+            {}
+        volumes:
+            {}
+        nodeSelector:
+            {}
+        affinity:
+            {}
+        tolerations:
+            {}
+        
+    
+language:
+    image:
+        repository: null
+        tag: null
+    service:
+        port: 8084
+        type: ClusterIP
+    deployment:
+        imagePullPolicy:
+        replicaCount: 1
+        podAnnotations:
+            {}
+        podLabels:
+            {}
+        livenessProbePath: null
+        readinessProbePath: null
+        security:
+            securityContext:
+                {}
+            podSecurityContext:
+                {}
+        resources:
+            {}
+        volumeMounts:
+            {}
+        volumes:
+            {}
+        nodeSelector:
+            {}
+        affinity:
+            {}
+        tolerations:
+            {}
+
+mosaic:
+    image:
+        repository: null
+        tag: null
+    service:
+        port: 8085
+        type: ClusterIP
+    envs:
+        {}
+    deployment:
+        imagePullPolicy:
+        replicaCount: 1
+        podAnnotations:
+            {}
+        podLabels:
+            {}
+        livenessProbePath: null
+        readinessProbePath: null
+        security:
+            securityContext:
+                {}
+            podSecurityContext:
+                {}
+        resources:
+            {}
+        volumeMounts:
+            {}
+        volumes:
+            {}
+        nodeSelector:
+            {}
+        affinity:
+            {}
+        tolerations:
+            {}
+    
+ui:
+    image:
+        repository: null
+        tag: null
+    service:
+        port: 3000
+        type: ClusterIP
+    envs:
+        {}
+    deployment:
+        imagePullPolicy:
+        replicaCount: 1
+        podAnnotations:
+            {}
+        podLabels:
+            {}
+        livenessProbePath: null
+        readinessProbePath: null
+        security:
+            securityContext:
+                {}
+            podSecurityContext:
+                {}
+        resources:
+            {}
+        volumeMounts:
+            {}
+        volumes:
+            {}
+        nodeSelector:
+            {}
+        affinity:
+            {}
+        tolerations:
+            {}
+
+webdav:
+    image:
+        repository: null
+        tag: null
+    service:
+        port: 8082
+        type: ClusterIP
+    envs:
+        {}
+    deployment:
+        imagePullPolicy:
+        replicaCount: 1
+        podAnnotations:
+            {}
+        podLabels:
+            {}
+        livenessProbePath: null
+        readinessProbePath: null
+        security:
+            securityContext:
+                {}
+            podSecurityContext:
+                {}
+        resources:
+            {}
+        volumeMounts:
+            {}
+        volumes:
+            {}
+        nodeSelector:
+            {}
+        affinity:
+            {}
+        tolerations:
+            {}
+
+redis:
+    enabled: true
+    auth:
+        enabled: false
+        
+    architecture: standalone
+
+    master:
+        persistence:
+            enabled: false
+            
+    replica:
+        replicaCount: 1
+        persistence:
+            enabled: false
+    
+minio:
+    enabled: true
+    persistence:
+        enabled: false
+    provisioning:
+        enabled: true
+        users:
+        - username: voltaserve
+          password: voltaserve
+          disabled: false
+          policies:
+          - readwrite
+          - consoleAdmin
+          - diagnostics
+
+    
+cockroachdb:
+    enabled: true
+    statefulset:
+        replicas: 1
+    storage:
+        persistentVolume:
+            enabled: false
+    conf:
+        single-node: true
+    tls:
+        enabled: false
+    initJob:
+        dbUsername: test
+        dbPassword: test
+    
+meilisearch:
+    enabled: true

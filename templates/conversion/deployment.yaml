@@ -44,20 +44,20 @@ spec:
           {{- end }}
           {{- end }}
           image: {{ .Values.conversion.image.repository | default "voltaserve/conversion" }}:{{ .Values.conversion.image.tag | default .Chart.AppVersion }}
-          imagePullPolicy: {{ .Values.conversion.deployment.imagePullPolicy }}
+          imagePullPolicy: {{ .Values.conversion.deployment.imagePullPolicy | default "IfNotPresent" }}
           ports:
             - name: http
-              containerPort: {{ .Values.conversion.service.port }}
+              containerPort: 8083
               protocol: TCP
           livenessProbe:
             httpGet:
               path: {{ .Values.conversion.deployment.livenessProbePath | default "/v2/health" }}
-              port: {{ .Values.conversion.service.targetPort }}
+              port: 8083
             initialDelaySeconds: 300
           readinessProbe:
             httpGet:
               path: {{ .Values.conversion.deployment.readinessProbePath | default "/v2/health" }}
-              port: {{ .Values.conversion.service.targetPort }}
+              port: 8083
             initialDelaySeconds: 15
           {{- if .Values.conversion.deployment.resources }}
           resources:

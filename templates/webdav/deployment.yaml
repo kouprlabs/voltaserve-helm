@@ -43,20 +43,20 @@ spec:
           {{- end }}
           {{- end }}
           image: {{ .Values.webdav.image.repository | default "voltaserve/webdav" }}:{{ .Values.webdav.image.tag | default .Chart.AppVersion }}
-          imagePullPolicy: {{ .Values.webdav.deployment.imagePullPolicy }}
+          imagePullPolicy: {{ .Values.webdav.deployment.imagePullPolicy | default "IfNotPresent" }}
           ports:
             - name: http
-              containerPort: {{ .Values.webdav.service.port }}
+              containerPort: 8082
               protocol: TCP
           livenessProbe:
             httpGet:
               path: {{ .Values.webdav.deployment.livenessProbePath | default "/v2/health" }}
-              port: {{ .Values.webdav.service.targetPort }}
+              port: 8082
             initialDelaySeconds: 300
           readinessProbe:
             httpGet:
               path: {{ .Values.webdav.deployment.readinessProbePath | default "/v2/health" }}
-              port: {{ .Values.webdav.service.targetPort }}
+              port: 8082
             initialDelaySeconds: 15
           {{- if .Values.webdav.deployment.resources }}
           resources:

@@ -43,20 +43,20 @@ spec:
           {{- end }}
           {{- end }}
           image: {{ .Values.ui.image.repository | default "voltaserve/ui" }}:{{ .Values.ui.image.tag | default .Chart.AppVersion }}
-          imagePullPolicy: {{ .Values.ui.deployment.imagePullPolicy }}
+          imagePullPolicy: {{ .Values.ui.deployment.imagePullPolicy | default "IfNotPresent" }}
           ports:
             - name: http
-              containerPort: {{ .Values.ui.service.port }}
+              containerPort: 3000
               protocol: TCP
           livenessProbe:
             httpGet:
               path: {{ .Values.ui.deployment.livenessProbePath | default "/v2/health" }}
-              port: {{ .Values.ui.service.targetPort }}
+              port: 3000
             initialDelaySeconds: 300
           readinessProbe:
             httpGet:
               path: {{ .Values.ui.deployment.readinessProbePath | default "/v2/health" }}
-              port: {{ .Values.ui.service.targetPort }}
+              port: 3000
             initialDelaySeconds: 15
           {{- if .Values.ui.deployment.resources }}
           resources:
