@@ -18,6 +18,12 @@ on:
       - reopened
     branches:
       - 'main'
+    paths:
+      - 'templates/**'
+      - 'files/**'
+      - '.helmignore'
+      - 'Chart.yaml'
+      - 'values.yaml'
 
 jobs:
   lint:
