@@ -24,10 +24,10 @@ data:
   {{- else }}
   POSTGRES_URL: {{ .Values.general.envs.POSTGRES_URL }}
   {{- end  }}
-  {{- if .Values.voltaserve.ingress.enabled }}
-  PUBLIC_UI_URL: https://{{ .Values.voltaserve.ingress.host }}
-  TOKEN_ISSUER: https://{{ .Values.voltaserve.ingress.host }}
-  SECURITY_CORS_ORIGINS: https://{{ .Values.voltaserve.ingress.host }}
+  {{- if .Values.voltaserve.ingress.ui.enabled }}
+  PUBLIC_UI_URL: https://{{ .Values.voltaserve.ingress.ui.host }}
+  TOKEN_ISSUER: https://{{ .Values.voltaserve.ingress.ui.host }}
+  SECURITY_CORS_ORIGINS: https://{{ .Values.voltaserve.ingress.ui.host }}
   {{- else }}
   PUBLIC_UI_URL: {{ .Values.general.envs.PUBLIC_UI_URL }}
   SECURITY_CORS_ORIGINS: {{ .Values.general.envs.PUBLIC_UI_URL }}

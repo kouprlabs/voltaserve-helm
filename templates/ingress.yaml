@@ -1,9 +1,11 @@
-{{- if .Values.voltaserve.ingress.enabled }}
+{{- if .Values.voltaserve.ingress }}
 {{- if and .Values.voltaserve.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
   {{- if not (hasKey .Values.voltaserve.ingress.annotations "kubernetes.io/ingress.class") }}
   {{- $_ := set .Values.voltaserve.ingress.annotations "kubernetes.io/ingress.class" .Values.voltaserve.ingress.className}}
   {{- end }}
 {{- end }}
+{{- if .Values.voltaserve.ingress.ui }}
+{{- if .Values.voltaserve.ingress.ui.enabled }}
 {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion }}
 apiVersion: networking.k8s.io/v1
 {{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion }}
@@ -16,28 +18,22 @@ metadata:
   name: {{ include "voltaserve-ui.fullname" . }}
   labels:
     {{- include "voltaserve.commonLabels" . | nindent 4 }}
-  {{- with .Values.voltaserve.ingress.annotations }}
+  {{- with .Values.voltaserve.ingress.ui.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  {{- if and .Values.voltaserve.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
-  ingressClassName: {{ .Values.voltaserve.ingress.className }}
+  {{- if and .Values.voltaserve.ingress.ui.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
+  ingressClassName: {{ .Values.voltaserve.ingress.ui.className }}
   {{- end }}
-  {{- if.Values.voltaserve.ingress.tls }}
-  {{- if .Values.voltaserve.ingress.tls.enabled }}
+  {{- if.Values.voltaserve.ingress.ui.tls }}
   tls:
-  - hosts:
-      - {{ .Values.voltaserve.ingress.host }}
-    {{- if .Values.voltaserve.ingress.tls.uiSecretName }}
-    secretName: {{ .Values.voltaserve.ingress.tls.uiSecretName }}
-    {{- else }}
-    secretName: {{ include "voltaserve-ui.fullname" . }}-cert
-    {{- end }}
+  {{- with .Values.voltaserver.ingress.ui.tls}}
+    {{- . toYaml | nindent 4}}
   {{- end }}
   {{- end }}
   rules:
-  - host: {{ .Values.voltaserve.ingress.host }}
+  - host: {{ .Values.voltaserve.ingress.ui.host }}
     http:
       paths:
       - path: /
@@ -54,7 +50,11 @@ spec:
           serviceName: {{ include "voltaserve-ui.fullname" . }}
           servicePort: {{ .Values.ui.service.port }}
           {{- end }}
+{{- end }}
+{{- end }}
 ---
+{{- if .Values.voltaserve.ingress.webdav }}
+{{- if .Values.voltaserve.ingress.webdav.enabled }}
 {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion }}
 apiVersion: networking.k8s.io/v1
 {{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion }}
@@ -67,24 +67,18 @@ metadata:
   name: {{ include "voltaserve-webdav.fullname" . }}
   labels:
     {{- include "voltaserve.commonLabels" . | nindent 4 }}
-  {{- with .Values.voltaserve.ingress.annotations }}
+  {{- with .Values.voltaserve.ingress.webdav.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  {{- if and .Values.voltaserve.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
-  ingressClassName: {{ .Values.voltaserve.ingress.className }}
+  {{- if and .Values.voltaserve.ingress.webdav.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
+  ingressClassName: {{ .Values.voltaserve.ingress.webdav.className }}
   {{- end }}
-  {{- if .Values.voltaserve.ingress.tls }}
-  {{- if .Values.voltaserve.ingress.tls.enabled }}
+  {{- if .Values.voltaserve.ingress.webdav.tls }}
   tls:
-  - hosts:
-      - {{ .Values.voltaserve.ingress.webdavHost }}
-    {{- if .Values.voltaserve.ingress.tls.webdavSecretName }}
-    secretName: {{ .Values.voltaserve.ingress.tls.webdavSecretName }}
-    {{- else }}
-    secretName: {{ include "voltaserve-webdav.fullname" . }}-cert
-    {{- end }}
+  {{- with .Values.voltaserver.ingress.ui.tls}}
+    {{- . toYaml | nindent 4}}
   {{- end }}
   {{- end }}
   rules:
@@ -105,4 +99,6 @@ spec:
           serviceName: {{ include "voltaserve-webdav.fullname" . }}
           servicePort: {{ .Values.webdav.service.port }}
           {{- end }}
+{{- end }}
+{{- end }}
 {{- end }}
