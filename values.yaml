@@ -20,7 +20,10 @@ ingress:
                 proxysetheader Connection "upgrade";
                 proxycachebypass $httpupgrade;
             }'
-    tls: true
+    tls:
+        enabled: true
+        uiSecretName: null
+        webdavSecretName: null
 
 imagePullSecrets: []
 
