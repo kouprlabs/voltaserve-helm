@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "voltaserve.fullname" . }}-idp
+  name: {{ include "voltaserve-idp.fullname" . }}
   labels:
     {{- include "voltaserve-idp.labels" . | nindent 4 }}
 spec:
@@ -36,7 +36,7 @@ spec:
       {{- end }}
       {{- end }}
       containers:
-        - name: {{ include "voltaserve.fullname" . }}-idp
+        - name: main
           {{- if .Values.idp.deployment.security }}
           {{- if .Values.idp.deployment.security.podSecurityContext }} 
           securityContext:
@@ -69,9 +69,9 @@ spec:
           {{- end }}
           envFrom:
           - configMapRef:
-              name: {{ include "voltaserve.fullname" . }}-idp
+              name: {{ include "voltaserve-idp.fullname" . }}
           - secretRef:
-              name: {{ include "voltaserve.fullname" . }}-idp
+              name: {{ include "voltaserve-idp.fullname" . }}
       {{- with .Values.idp.deployment.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}

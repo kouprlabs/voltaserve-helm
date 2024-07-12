@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "voltaserve.fullname" . }}-idp
+  name: {{ include "voltaserve-idp.fullname" . }}
 data:
   {{- if .Values.idp.envs }}
     {{- range $k,$v := .Values.idp.envs }}

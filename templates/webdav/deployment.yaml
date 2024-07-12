@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "voltaserve.fullname" . }}-webdav
+  name: {{ include "voltaserve-webdav.fullname" . }}
   labels:
     {{- include "voltaserve-webdav.labels" . | nindent 4 }}
 spec:
@@ -35,7 +35,7 @@ spec:
       {{- end }}
       {{- end }}
       containers:
-        - name: {{ include "voltaserve.fullname" . }}-webdav
+        - name: main
           {{- if .Values.webdav.deployment.security }}
           {{- if .Values.webdav.deployment.security.podSecurityContext }} 
           securityContext:
@@ -68,7 +68,7 @@ spec:
           {{- end }}
           envFrom:
           - configMapRef:
-              name: {{ include "voltaserve.fullname" . }}-webdav
+              name: {{ include "voltaserve-webdav.fullname" . }}
       {{- with .Values.webdav.deployment.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}
