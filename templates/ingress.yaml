@@ -29,8 +29,8 @@ spec:
   tls:
   - hosts:
       - {{ .Values.ingress.host }}
-    {{- if .Values.tls.uiSecretName }}
-    secretName: {{ .Values.tls.uiSecretName }}
+    {{- if .Values.ingress.tls.uiSecretName }}
+    secretName: {{ .Values.ingress.tls.uiSecretName }}
     {{- else }}
     secretName: {{ include "voltaserve-ui.fullname" . }}-cert
     {{- end }}
@@ -80,8 +80,8 @@ spec:
   tls:
   - hosts:
       - {{ .Values.ingress.webdavHost }} 
-    {{- if .Values.tls.webdavSecretName }}
-    secretName: {{ .Values.tls.webdavSecretName }}
+    {{- if .Values.ingress.tls.webdavSecretName }}
+    secretName: {{ .Values.ingress.tls.webdavSecretName }}
     {{- else }}
     secretName: {{ include "voltaserve-webdav.fullname" . }}-cert
     {{- end }}
