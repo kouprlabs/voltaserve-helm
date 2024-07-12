@@ -31,7 +31,7 @@ jobs:
         run: |
           tags=$(git tag -l)
           echo $tags | grep -i -q  ${{ env.TAG }}
-          if [ $? -eq 1 ]; then
+          if [ $? -eq 0 ]; then
             echo "This tag (${{ env.TAG }}) already exists!"
             exit 1;
           fi
