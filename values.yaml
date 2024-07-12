@@ -1,22 +1,3 @@
-voltaserve:
-    ingress:
-        ui:
-            enabled: true
-            host: ui.public.url
-            annotations:
-                {}
-            className: nginx-public
-            tls:
-                []
-        webdav:
-            enabled: true
-            annotations:
-                {}
-            host: webdav.public.url
-            className: nginx-public
-            tls:
-                []
-
 imagePullSecrets: []
 
 general:
@@ -227,6 +208,14 @@ mosaic:
             {}
     
 ui:
+    ingress:
+        enabled: true
+        host: ui.public.url
+        annotations:
+            {}
+        className: nginx-public
+        tls:
+            []
     image:
         repository: null
         tag: null
@@ -263,6 +252,14 @@ ui:
             {}
 
 webdav:
+    ingress:
+        enabled: true
+        annotations:
+            {}
+        host: webdav.public.url
+        className: nginx-public
+        tls:
+            []
     image:
         repository: null
         tag: null
