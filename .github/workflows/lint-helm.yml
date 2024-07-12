@@ -39,4 +39,4 @@ jobs:
         run: helm dependency build .
         
       - name: Lint helm chart
-        run: helm lint voltaserve . -f values.yaml
+        run: helm lint . -f values.yaml
