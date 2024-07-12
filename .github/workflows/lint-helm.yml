@@ -20,7 +20,7 @@ on:
       - 'main'
 
 jobs:
-  build_and_push:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
