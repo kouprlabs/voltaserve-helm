@@ -7,7 +7,7 @@ voltaserve:
                 {}
             className: nginx-public
             tls:
-                {}
+                []
         webdav:
             enabled: true
             annotations:
@@ -15,7 +15,7 @@ voltaserve:
             host: webdav.public.url
             className: nginx-public
             tls:
-                {}
+                []
 
 imagePullSecrets: []
 
