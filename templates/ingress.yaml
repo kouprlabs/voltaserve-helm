@@ -1,7 +1,7 @@
-{{- if .Values.ingress.enabled }}
-{{- if and .Values.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
-  {{- if not (hasKey .Values.ingress.annotations "kubernetes.io/ingress.class") }}
-  {{- $_ := set .Values.ingress.annotations "kubernetes.io/ingress.class" .Values.ingress.className}}
+{{- if .Values.voltaserve.ingress.enabled }}
+{{- if and .Values.voltaserve.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
+  {{- if not (hasKey .Values.voltaserve.ingress.annotations "kubernetes.io/ingress.class") }}
+  {{- $_ := set .Values.voltaserve.ingress.annotations "kubernetes.io/ingress.class" .Values.voltaserve.ingress.className}}
   {{- end }}
 {{- end }}
 {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion }}
@@ -16,33 +16,28 @@ metadata:
   name: {{ include "voltaserve-ui.fullname" . }}
   labels:
     {{- include "voltaserve.commonLabels" . | nindent 4 }}
-  {{- with .Values.ingress.annotations }}
+  {{- with .Values.voltaserve.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  {{- if and .Values.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
-  ingressClassName: {{ .Values.ingress.className }}
+  {{- if and .Values.voltaserve.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
+  ingressClassName: {{ .Values.voltaserve.ingress.className }}
   {{- end }}
-  {{- if.Values.ingress.tls }}
-  {{- if .Values.ingress.tls.enabled }}
+  {{- if.Values.voltaserve.ingress.tls }}
+  {{- if .Values.voltaserve.ingress.tls.enabled }}
   tls:
   - hosts:
-      - {{ .Values.ingress.host }}
-<<<<<<< HEAD
-    {{- if .Values.ingress.tls.uiSecretName }}
-    secretName: {{ .Values.ingress.tls.uiSecretName }}
-=======
-    {{- if .Values.tls.uiSecretName }}
-    secretName: {{ .Values.tls.uiSecretName }}
->>>>>>> 5533d02104c603235883ed1582a79412dd35326c
+      - {{ .Values.voltaserve.ingress.host }}
+    {{- if .Values.voltaserve.ingress.tls.uiSecretName }}
+    secretName: {{ .Values.voltaserve.ingress.tls.uiSecretName }}
     {{- else }}
     secretName: {{ include "voltaserve-ui.fullname" . }}-cert
     {{- end }}
   {{- end }}
   {{- end }}
   rules:
-  - host: {{ .Values.ingress.host }}
+  - host: {{ .Values.voltaserve.ingress.host }}
     http:
       paths:
       - path: /
@@ -72,33 +67,28 @@ metadata:
   name: {{ include "voltaserve-webdav.fullname" . }}
   labels:
     {{- include "voltaserve.commonLabels" . | nindent 4 }}
-  {{- with .Values.ingress.annotations }}
+  {{- with .Values.voltaserve.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  {{- if and .Values.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
-  ingressClassName: {{ .Values.ingress.className }}
+  {{- if and .Values.voltaserve.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
+  ingressClassName: {{ .Values.voltaserve.ingress.className }}
   {{- end }}
-  {{- if .Values.ingress.tls }}
-  {{- if .Values.ingress.tls.enabled }}
+  {{- if .Values.voltaserve.ingress.tls }}
+  {{- if .Values.voltaserve.ingress.tls.enabled }}
   tls:
   - hosts:
-      - {{ .Values.ingress.webdavHost }} 
-<<<<<<< HEAD
-    {{- if .Values.ingress.tls.webdavSecretName }}
-    secretName: {{ .Values.ingress.tls.webdavSecretName }}
-=======
-    {{- if .Values.tls.webdavSecretName }}
-    secretName: {{ .Values.tls.webdavSecretName }}
->>>>>>> 5533d02104c603235883ed1582a79412dd35326c
+      - {{ .Values.voltaserve.ingress.webdavHost }}
+    {{- if .Values.voltaserve.ingress.tls.webdavSecretName }}
+    secretName: {{ .Values.voltaserve.ingress.tls.webdavSecretName }}
     {{- else }}
     secretName: {{ include "voltaserve-webdav.fullname" . }}-cert
     {{- end }}
   {{- end }}
   {{- end }}
   rules:
-  - host: {{ .Values.ingress.webdavHost }} 
+  - host: {{ .Values.voltaserve.ingress.webdavHost }}
     http:
       paths:
       - path: /
