@@ -1,19 +1,19 @@
-{{- if .Values.ingress.enabled -}}
-{{- if and .Values.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
-  {{- if not (hasKey .Values.ingress.annotations "kubernetes.io/ingress.class") }}
-  {{- $_ := set .Values.ingress.annotations "kubernetes.io/ingress.class" .Values.ingress.className}}
-  {{- end }}
-{{- end }}
-{{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
+{{ if .Values.ingress.enabled }}
+{{ if and .Values.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
+  {{ if not (hasKey .Values.ingress.annotations "kubernetes.io/ingress.class") }}
+  {{ $_ := set .Values.ingress.annotations "kubernetes.io/ingress.class" .Values.ingress.className}}
+  {{ end }}
+{{ end }}
+{{ if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion }}
 apiVersion: networking.k8s.io/v1
-{{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+{{ else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion }}
 apiVersion: networking.k8s.io/v1beta1
-{{- else -}}
+{{ else }}
 apiVersion: extensions/v1beta1
-{{- end }}
+{{ end }}
 kind: Ingress
 metadata:
-  name: {{ include "voltaserve.fullname" . }}-ui
+  name: {{ include "voltaserve-ui.fullname" . }}
   labels:
     {{- include "voltaserve.commonLabels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
@@ -24,14 +24,20 @@ spec:
   {{- if and .Values.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
   ingressClassName: {{ .Values.ingress.className }}
   {{- end }}
-  {{- if .Values.ingress.tls }}
+  {{- if.Values.ingress.tls }}
+  {{- if .Values.ingress.tls.enabled }}
   tls:
   - hosts:
-      - {{ .Values.ingress.host }} 
-    secretName: {{ include "voltaserve.fullname" . }}-ui-cert
+      - {{ .Values.ingress.host }}
+    {{- if .Values.tls.uiSecretName }}
+    secretName: {{ .Values.tls.uiSecretName }}
+    {{- else }}
+    secretName: {{ include "voltaserve-ui.fullname" . }}-cert
+    {{- end }}
+  {{- end }}
   {{- end }}
   rules:
-  - host: {{ .Values.ingress.host }} 
+  - host: {{ .Values.ingress.host }}
     http:
       paths:
       - path: /
@@ -41,24 +47,24 @@ spec:
         backend:
           {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
           service:
-            name: {{ include "voltaserve.fullname" . }}-ui
+            name: {{ include "voltaserve-ui.fullname" . }}
             port:
               number: {{ .Values.ui.service.port }}
           {{- else }}
-          serviceName: {{ include "voltaserve.fullname" . }}-ui
+          serviceName: {{ include "voltaserve-ui.fullname" . }}
           servicePort: {{ .Values.ui.service.port }}
           {{- end }}
 ---
-{{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion }}
 apiVersion: networking.k8s.io/v1
-{{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion }}
 apiVersion: networking.k8s.io/v1beta1
-{{- else -}}
+{{- else }}
 apiVersion: extensions/v1beta1
 {{- end }}
 kind: Ingress
 metadata:
-  name: {{ include "voltaserve.fullname" . }}-webdav
+  name: {{ include "voltaserve-webdav.fullname" . }}
   labels:
     {{- include "voltaserve.commonLabels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
@@ -70,10 +76,16 @@ spec:
   ingressClassName: {{ .Values.ingress.className }}
   {{- end }}
   {{- if .Values.ingress.tls }}
+  {{- if .Values.ingress.tls.enabled }}
   tls:
   - hosts:
       - {{ .Values.ingress.webdavHost }} 
-    secretName: {{ include "voltaserve.fullname" . }}-webdav-cert
+    {{- if .Values.tls.webdavSecretName }}
+    secretName: {{ .Values.tls.webdavSecretName }}
+    {{- else }}
+    secretName: {{ include "voltaserve-webdav.fullname" . }}-cert
+    {{- end }}
+  {{- end }}
   {{- end }}
   rules:
   - host: {{ .Values.ingress.webdavHost }} 
@@ -86,11 +98,11 @@ spec:
         backend:
           {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
           service:
-            name: {{ include "voltaserve.fullname" . }}-webdav
+            name: {{ include "voltaserve-webdav.fullname" . }}
             port:
               number: {{ .Values.webdav.service.port }}
           {{- else }}
-          serviceName: {{ include "voltaserve.fullname" . }}-webdav
+          serviceName: {{ include "voltaserve-webdav.fullname" . }}
           servicePort: {{ .Values.webdav.service.port }}
           {{- end }}
 {{- end }}
