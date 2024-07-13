@@ -72,6 +72,10 @@ spec:
               name: {{ include "voltaserve-mosaic.fullname" . }}
           - secretRef:
               name: {{ include "voltaserve-mosaic.fullname" . }}
+          {{- if .Values.mosaic.existingSecret }}
+          - secretRef:
+              name: {{ .Values.mosaic.existingSecret }}
+          {{- end }}
       {{- with .Values.mosaic.deployment.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}

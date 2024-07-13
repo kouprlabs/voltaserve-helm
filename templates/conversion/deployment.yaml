@@ -72,6 +72,10 @@ spec:
               name: {{ include "voltaserve-conversion.fullname" . }}
           - secretRef:
               name: {{ include "voltaserve-conversion.fullname" . }}
+          {{- if .Values.conversion.existingSecret }}
+          - secretRef:
+              name: {{ .Values.conversion.existingSecret }}
+          {{- end }}
       {{- with .Values.conversion.deployment.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}

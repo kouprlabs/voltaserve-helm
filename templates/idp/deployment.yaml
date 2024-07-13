@@ -72,6 +72,10 @@ spec:
               name: {{ include "voltaserve-idp.fullname" . }}
           - secretRef:
               name: {{ include "voltaserve-idp.fullname" . }}
+          {{- if .Values.idp.existingSecret }}
+          - secretRef:
+              name: {{ .Values.idp.existingSecret }}
+          {{- end }}
       {{- with .Values.idp.deployment.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}

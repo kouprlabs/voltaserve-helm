@@ -28,6 +28,7 @@ general:
         S3_SECRET_KEY: voltaserve
 
 api:
+    existingSecret: null
     image:
         repository: null
         tag: null
@@ -65,6 +66,7 @@ api:
 
     
 conversion:
+    existingSecret: null
     image:
         repository: null
         tag: null
@@ -101,6 +103,7 @@ conversion:
             {}
 
 idp:
+    existingSecret: null
     image:
         repository: null
         tag: null
@@ -172,6 +175,7 @@ language:
             {}
 
 mosaic:
+    existingSecret: null
     image:
         repository: null
         tag: null
@@ -208,6 +212,7 @@ mosaic:
             {}
     
 ui:
+    existingSecret: null
     ingress:
         enabled: true
         host: ui.public.url
@@ -252,6 +257,7 @@ ui:
             {}
 
 webdav:
+    existingSecret: null
     ingress:
         enabled: true
         annotations:
