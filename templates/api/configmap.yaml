@@ -16,9 +16,9 @@ data:
   CONVERSION_URL: http://{{ include "voltaserve-conversion.fullname" . }}.{{.Release.Namespace}}.svc.cluster.local:{{ .Values.conversion.service.port }}
   LANGUAGE_URL: http://{{ include "voltaserve-language.fullname" . }}.{{.Release.Namespace}}.svc.cluster.local:{{ .Values.language.service.port }}
   MOSAIC_URL: http://{{ include "voltaserve-mosaic.fullname" . }}.{{.Release.Namespace}}.svc.cluster.local:{{ .Values.mosaic.service.port }}
-  {{- if .Values.ingress.enabled }}
-  PUBLIC_UI_URL: https://{{ .Values.ingress.host }}
-  SECURITY_CORS_ORIGINS: https://{{ .Values.ingress.host }}
+  {{- if .Values.ui.ingress.enabled }}
+  PUBLIC_UI_URL: https://{{ .Values.ui.ingress.host }}
+  SECURITY_CORS_ORIGINS: https://{{ .Values.ui.ingress.host }}
   {{- else }}
   PUBLIC_UI_URL: {{ .Values.general.envs.PUBLIC_UI_URL }}
   SECURITY_CORS_ORIGINS: {{ .Values.general.envs.PUBLIC_UI_URL }}
