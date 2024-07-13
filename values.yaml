@@ -1,27 +1,3 @@
-ingress:
-    enabled: true
-    host: ui.public.url
-    webdavHost: webdav.public.url
-    className: nginx-public
-    annotations:
-        cert-manager.io/cluster-issuer: letsencrypt-http01
-        nginx.ingress.kubernetes.io/rewrite-target: /
-        nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
-        nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
-        nginx.ingress.kubernetes.io/proxy-body-size: 512m
-        nginx.ingress.kubernetes.io/server-snippets: '
-            location / {
-                proxysetheader Upgrade $httpupgrade;
-                proxyhttpversion 1.1;
-                proxysetheader X-Forwarded-Host $httphost;
-                proxysetheader X-Forwarded-Proto $scheme;
-                proxysetheader X-Forwarded-For $remoteaddr;
-                proxysetheader Host $host;
-                proxysetheader Connection "upgrade";
-                proxycachebypass $httpupgrade;
-            }'
-    tls: true
-
 imagePullSecrets: []
 
 general:
@@ -232,6 +208,14 @@ mosaic:
             {}
     
 ui:
+    ingress:
+        enabled: true
+        host: ui.public.url
+        annotations:
+            {}
+        className: nginx-public
+        tls:
+            []
     image:
         repository: null
         tag: null
@@ -268,6 +252,14 @@ ui:
             {}
 
 webdav:
+    ingress:
+        enabled: true
+        annotations:
+            {}
+        host: webdav.public.url
+        className: nginx-public
+        tls:
+            []
     image:
         repository: null
         tag: null

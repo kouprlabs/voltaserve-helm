@@ -1,0 +1,53 @@
+{{- if .Values.webdav.ingress }}
+{{- if .Values.webdav.ingress.enabled }}
+{{- if and .Values.webdav.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
+  {{- if not (hasKey .Values.webdav.ingress.annotations "kubernetes.io/ingress.class") }}
+  {{- $_ := set .Values.webdav.ingress.annotations "kubernetes.io/ingress.class" .Values.ingress.className}}
+  {{- end }}
+{{- end }}
+{{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion }}
+apiVersion: networking.k8s.io/v1
+{{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion }}
+apiVersion: networking.k8s.io/v1beta1
+{{- else }}
+apiVersion: extensions/v1beta1
+{{- end }}
+kind: Ingress
+metadata:
+  name: {{ include "voltaserve-webdav.fullname" . }}
+  labels:
+    {{- include "voltaserve.commonLabels" . | nindent 4 }}
+  {{- with .Values.webdav.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if and .Values.webdav.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
+  ingressClassName: {{ .Values.webdav.ingress.className }}
+  {{- end }}
+  {{- if .Values.webdav.ingress.tls }}
+  tls:
+  {{- with .Values.voltaserver.ingress.ui.tls}}
+    {{- . toYaml | nindent 4}}
+  {{- end }}
+  {{- end }}
+  rules:
+  - host: {{ .Values.webdav.host }}
+    http:
+      paths:
+      - path: /
+        {{- if (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion) }}
+        pathType: ImplementationSpecific
+        {{- end }}
+        backend:
+          {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
+          service:
+            name: {{ include "voltaserve-webdav.fullname" . }}
+            port:
+              number: {{ .Values.webdav.service.port }}
+          {{- else }}
+          serviceName: {{ include "voltaserve-webdav.fullname" . }}
+          servicePort: {{ .Values.webdav.service.port }}
+          {{- end }}
+{{- end }}
+{{- end }}
