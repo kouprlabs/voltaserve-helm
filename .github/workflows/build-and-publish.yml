@@ -20,6 +20,8 @@ on:
 jobs:
   build_and_push:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -30,7 +32,7 @@ jobs:
       - name: Verify if the tag exists
         run: |
           tags=$(git tag -l)
-          echo $tags | grep -i -q  ${{ env.TAG }}
+          echo "$tags" | grep -i -q  ${{ env.TAG }}
           if [ $? -eq 0 ]; then
             echo "This tag (${{ env.TAG }}) already exists!"
             exit 1;
@@ -39,7 +41,9 @@ jobs:
       - name: Create release
         uses: ncipollo/release-action@v1.14.0
         with:
+          commit: main
           tag: ${{ env.TAG }}
+          generateReleaseNotes: true
           
       - name: Release Helm Chart
         uses: appany/helm-oci-chart-releaser@v0.4.2
