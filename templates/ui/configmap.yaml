@@ -8,5 +8,5 @@ data:
       {{$k }}: {{ default "" $v | quote }}
     {{- end }}
   {{- end }}
-  API_URL: http://{{ include "voltaserve-api.fullname" . }}.{{.Release.Namespace}}.svc.cluster.local:{{ .Values.api.service.port }}
-  IDP_URL: http://{{ include "voltaserve-idp.fullname" . }}.{{.Release.Namespace}}.svc.cluster.local:{{ .Values.idp.service.port }}
+  API_URL: http://{{ include "voltaserve-api.fullname" . }}.{{.Release.Namespace}}.svc.{{ .Values.clusterDomain | default cluster.local }}:{{ .Values.api.service.port }}
+  IDP_URL: http://{{ include "voltaserve-idp.fullname" . }}.{{.Release.Namespace}}.svc.{{ .Values.clusterDomain | default cluster.local }}:{{ .Values.idp.service.port }}
