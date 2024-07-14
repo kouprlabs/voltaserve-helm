@@ -35,7 +35,7 @@ jobs:
       - name: Checkout Repository
         uses: Azure/setup-helm@v4.2.0
 
-      - name: Build dependencies
+      - name: Update dependencies
         run: helm dependency update .
         
       - name: Lint helm chart

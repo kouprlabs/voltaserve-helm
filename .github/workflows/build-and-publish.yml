@@ -32,30 +32,28 @@ jobs:
       
       - name: Verify if the tag exists
         run: |
-          echo "start"
-          tags=$(git tag -l)
-          echo "TAGS: $tags"
-          echo "$tags" | grep -i -q ${{ env.TAG }}
-          echo $?
-          if [ $? -eq 0 ]; then
-            echo "This tag (${{ env.TAG }}) already exists!"
+          tags="$(git tag -l)"
+          if echo "$tags" | grep -i -q "${{ env.TAG }}"; then
+            echo "This tag ("${{ env.TAG }}") already exists!"
             exit 1
           fi
           
-#      - name: Create release
-#        uses: ncipollo/release-action@v1.14.0
-#        with:
-#          commit: main
-#          tag: ${{ env.TAG }}
-#          generateReleaseNotes: true
-#
-#      - name: Release Helm Chart
-#        uses: appany/helm-oci-chart-releaser@v0.4.2
-#        with:
-#          name: voltaserve
-#          repository: kouprlabs/voltaserve-helm
-#          tag: ${{ env.TAG }}
-#          registry: ghcr.io
-#          registry_username: ${{ github.actor }}
-#          registry_password: ${{ github.token }}
-#          update_dependencies: true
+      - name: Create release
+        uses: ncipollo/release-action@v1.14.0
+        with:
+          commit: main
+          tag: "${{ env.TAG }}"
+          generateReleaseNotes: true
+          skipIfReleaseExists: true
+
+      - name: Release Helm Chart
+        uses: appany/helm-oci-chart-releaser@v0.4.2
+        with:
+          name: voltaserve
+          repository: kouprlabs/voltaserve-helm
+          tag: "${{ env.TAG }}"
+          path: .
+          registry: ghcr.io
+          registry_username: ${{ github.actor }}
+          registry_password: ${{ github.token }}
+          update_dependencies: true
