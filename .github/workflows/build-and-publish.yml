@@ -51,6 +51,7 @@ jobs:
           name: voltaserve
           repository: kouprlabs/voltaserve-helm
           tag: "${{ env.TAG }}"
+          path: .
           registry: ghcr.io
           registry_username: ${{ github.actor }}
           registry_password: ${{ github.token }}
