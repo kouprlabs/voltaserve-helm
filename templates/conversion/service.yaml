@@ -4,6 +4,10 @@ metadata:
   name: {{ include "voltaserve-conversion.fullname" . }}
   labels:
     {{- include "voltaserve-conversion.labels" . | nindent 4 }}
+  {{- with .Values.conversion.service.annotations }}
+  annotations:
+    {{ toYaml . | indent 4 }}
+  {{- end }}
 spec:
   ipFamilyPolicy: SingleStack
   type: {{ .Values.conversion.service.type }}

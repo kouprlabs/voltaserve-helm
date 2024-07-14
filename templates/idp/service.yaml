@@ -4,6 +4,10 @@ metadata:
   name: {{ include "voltaserve-idp.fullname" . }}
   labels:
     {{- include "voltaserve-idp.labels" . | nindent 4 }}
+  {{- with .Values.idp.service.annotations }}
+  annotations:
+    {{ toYaml . | indent 4 }}
+  {{- end }}
 spec:
   ipFamilyPolicy: SingleStack
   type: {{ .Values.idp.service.type }}

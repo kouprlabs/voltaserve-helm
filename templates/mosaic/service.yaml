@@ -4,6 +4,10 @@ metadata:
   name: {{ include "voltaserve-mosaic.fullname" . }}
   labels:
     {{- include "voltaserve-mosaic.labels" . | nindent 4 }}
+  {{- with .Values.mosaic.service.annotations }}
+  annotations:
+    {{ toYaml . | indent 4 }}
+  {{- end }}
 spec:
   ipFamilyPolicy: SingleStack
   type: {{ .Values.mosaic.service.type }}

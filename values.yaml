@@ -37,6 +37,8 @@ api:
     service:
         port: 8080
         type: ClusterIP
+        annotations:
+            {}
     envs:
         {}
     deployment:
@@ -75,6 +77,8 @@ conversion:
     service:
         port: 8083
         type: ClusterIP
+        annotations:
+            {}
     envs:
         {}
     deployment:
@@ -112,6 +116,8 @@ idp:
     service:
         port: 8081
         type: ClusterIP
+        annotations:
+            {}
     envs:
         {}
     deployment:
@@ -149,6 +155,8 @@ language:
     service:
         port: 8084
         type: ClusterIP
+        annotations:
+            {}
     deployment:
         imagePullPolicy:
         replicaCount: 1
@@ -184,6 +192,8 @@ mosaic:
     service:
         port: 8085
         type: ClusterIP
+        annotations:
+            {}
     envs:
         {}
     deployment:
@@ -229,6 +239,8 @@ ui:
     service:
         port: 3000
         type: ClusterIP
+        annotations:
+            {}
     envs:
         {}
     deployment:
@@ -274,6 +286,8 @@ webdav:
     service:
         port: 8082
         type: ClusterIP
+        annotations:
+            {}
     envs:
         {}
     deployment:
