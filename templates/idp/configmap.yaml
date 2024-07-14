@@ -15,7 +15,7 @@ data:
   SMTP_SENDER_NAME: {{ .Values.general.smtp.SMTP_SENDER_NAME | quote}}
   SMTP_SECURE: {{ .Values.general.smtp.SMTP_SECURE | quote }}
   {{- if .Values.meilisearch.enabled }}
-  SEARCH_URL: http://{{ include "voltaserve.fullname" . }}-meilisearch.{{.Release.Namespace}}.svc.{{ .Values.clusterDomain | default cluster.local }}:{{ default .Values.meilisearch.service.port 7700 }}
+  SEARCH_URL: http://{{ include "voltaserve.fullname" . }}-meilisearch.{{.Release.Namespace}}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:{{ default .Values.meilisearch.service.port 7700 }}
   {{- else }}
   SEARCH_URL: {{ .Values.general.envs.SEARCH_URL }}
   {{- end  }}

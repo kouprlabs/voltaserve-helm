@@ -8,11 +8,11 @@ data:
       {{$k }}: {{ default "" $v | quote }}
     {{- end }}
   {{- end }}
-  API_URL: http://{{ include "voltaserve-api.fullname" . }} .{{.Release.Namespace}}.svc.{{ .Values.clusterDomain | default cluster.local }}:{{ .Values.api.service.port }}
-  LANGUAGE_URL: http://{{ include "voltaserve-language.fullname" . }}.{{.Release.Namespace}}.svc.{{ .Values.clusterDomain | default cluster.local }}:{{ .Values.language.service.port }}
-  MOSAIC_URL: http://{{ include "voltaserve-mosaic.fullname" . }}.{{.Release.Namespace}}.svc.{{ .Values.clusterDomain | default cluster.local }}:{{ .Values.mosaic.service.port }}
+  API_URL: http://{{ include "voltaserve-api.fullname" . }} .{{.Release.Namespace}}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:{{ .Values.api.service.port }}
+  LANGUAGE_URL: http://{{ include "voltaserve-language.fullname" . }}.{{.Release.Namespace}}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:{{ .Values.language.service.port }}
+  MOSAIC_URL: http://{{ include "voltaserve-mosaic.fullname" . }}.{{.Release.Namespace}}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:{{ .Values.mosaic.service.port }}
   {{- if .Values.minio.enabled }}
-  S3_URL: {{ include "voltaserve.fullname" . }}-minio.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain | default cluster.local }}:9000
+  S3_URL: {{ include "voltaserve.fullname" . }}-minio.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:9000
   {{- else }}
   S3_URL: {{ .Values.general.envs.S3_URL }}
   {{- end  }}
