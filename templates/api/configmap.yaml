@@ -13,9 +13,9 @@ data:
   SMTP_SENDER_ADDRESS: {{ .Values.general.smtp.SMTP_SENDER_ADDRESS | quote }}
   SMTP_SENDER_NAME: {{ .Values.general.smtp.SMTP_SENDER_NAME | quote }}
   SMTP_SECURE: {{ .Values.general.smtp.SMTP_SECURE | quote }}
-  CONVERSION_URL: http://{{ include "voltaserve-conversion.fullname" . }}.{{.Release.Namespace}}.svc.cluster.local:{{ .Values.conversion.service.port }}
-  LANGUAGE_URL: http://{{ include "voltaserve-language.fullname" . }}.{{.Release.Namespace}}.svc.cluster.local:{{ .Values.language.service.port }}
-  MOSAIC_URL: http://{{ include "voltaserve-mosaic.fullname" . }}.{{.Release.Namespace}}.svc.cluster.local:{{ .Values.mosaic.service.port }}
+  CONVERSION_URL: http://{{ include "voltaserve-conversion.fullname" . }}.{{.Release.Namespace}}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:{{ .Values.conversion.service.port }}
+  LANGUAGE_URL: http://{{ include "voltaserve-language.fullname" . }}.{{.Release.Namespace}}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:{{ .Values.language.service.port }}
+  MOSAIC_URL: http://{{ include "voltaserve-mosaic.fullname" . }}.{{.Release.Namespace}}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:{{ .Values.mosaic.service.port }}
   {{- if .Values.ui.ingress.enabled }}
   PUBLIC_UI_URL: https://{{ .Values.ui.ingress.host }}
   SECURITY_CORS_ORIGINS: https://{{ .Values.ui.ingress.host }}
@@ -24,13 +24,13 @@ data:
   SECURITY_CORS_ORIGINS: {{ .Values.general.envs.PUBLIC_UI_URL }}
   {{- end  }}
   {{- if .Values.minio.enabled }}
-  S3_URL: {{ include "voltaserve.fullname" . }}-minio.{{ .Release.Namespace }}.svc.cluster.local:9000
+  S3_URL: {{ include "voltaserve.fullname" . }}-minio.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:9000
   {{- else }}
   S3_URL: {{ .Values.general.envs.S3_URL }}
   {{- end  }}
   S3_SECURE: {{ .Values.general.envs.S3_SECURE | quote }}
   {{- if .Values.redis.enabled }}
-  REDIS_ADDRESS: {{ include "voltaserve.fullname" . }}-redis-master.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.redis.master.service.ports.redis | default 6379 }}
+  REDIS_ADDRESS: {{ include "voltaserve.fullname" . }}-redis-master.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:{{ .Values.redis.master.service.ports.redis | default 6379 }}
   {{- else }}
   REDIS_ADDRESS: {{ .Values.general.envs.REDIS_ADDRESS }}
   {{- end  }}
@@ -40,7 +40,7 @@ data:
   POSTGRES_URL: {{ .Values.general.envs.POSTGRES_URL }}
   {{- end  }}
   {{- if .Values.meilisearch.enabled }}
-  SEARCH_URL: http://{{ include "voltaserve.fullname" . }}-meilisearch.{{.Release.Namespace}}.svc.cluster.local:{{ .Values.meilisearch.service.port | default 7700 }}
+  SEARCH_URL: http://{{ include "voltaserve.fullname" . }}-meilisearch.{{.Release.Namespace}}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:{{ .Values.meilisearch.service.port | default 7700 }}
   {{- else }}
   SEARCH_URL: {{ .Values.general.envs.SEARCH_URL }}
   {{- end  }}
