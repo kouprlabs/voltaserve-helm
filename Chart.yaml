@@ -19,5 +19,5 @@ dependencies:
     version: 0.8.0
     repository: https://meilisearch.github.io/meilisearch-kubernetes
     condition: meilisearch.enabled
-version: 0.2.0
+version: 0.2.1
 appVersion: "2.0.2"

@@ -69,6 +69,10 @@ spec:
           envFrom:
           - configMapRef:
               name: {{ include "voltaserve-ui.fullname" . }}
+          {{- if .Values.ui.existingSecret }}
+          - secretRef:
+              name: {{ .Values.ui.existingSecret }}
+          {{- end }}
       {{- with .Values.ui.deployment.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}

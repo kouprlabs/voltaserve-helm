@@ -69,6 +69,10 @@ spec:
           envFrom:
           - configMapRef:
               name: {{ include "voltaserve-webdav.fullname" . }}
+          {{- if .Values.webdav.existingSecret }}
+          - secretRef:
+              name: {{ .Values.webdav.existingSecret }}
+          {{- end }}
       {{- with .Values.webdav.deployment.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}
