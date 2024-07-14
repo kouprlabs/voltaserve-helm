@@ -1,5 +1,7 @@
 imagePullSecrets: []
 
+clusterDomain: cluster.local
+
 general:
     smtp:
         SMTP_HOST: "YOUR.SMTP.HOST"
