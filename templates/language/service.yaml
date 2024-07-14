@@ -4,6 +4,10 @@ metadata:
   name: {{ include "voltaserve-language.fullname" . }}
   labels:
     {{- include "voltaserve-language.labels" . | nindent 4 }}
+  {{- with .Values.language.service.annotations }}
+  annotations:
+    {{ toYaml . | indent 4 }}
+  {{- end }}
 spec:
   ipFamilyPolicy: SingleStack
   type: {{ .Values.language.service.type }}
