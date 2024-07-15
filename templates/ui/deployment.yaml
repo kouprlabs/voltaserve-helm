@@ -12,7 +12,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/idp/configmap.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/ui/configmap.yaml") . | sha256sum }}
         {{- with .Values.ui.deployment.podAnnotations }}
           {{- toYaml . | nindent 8 }}
         {{- end }}

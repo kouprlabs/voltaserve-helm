@@ -12,7 +12,8 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/idp/configmap.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/webdav/configmap.yaml") . | sha256sum }}
+        checksum/secrets: {{ include (print $.Template.BasePath "/webdav/secret.yaml") . | sha256sum }}
         {{- with .Values.webdav.deployment.podAnnotations }}
           {{- toYaml . | nindent 8 }}
         {{- end }}

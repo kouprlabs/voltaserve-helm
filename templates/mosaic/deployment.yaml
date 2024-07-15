@@ -12,8 +12,8 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/idp/configmap.yaml") . | sha256sum }}
-        checksum/secrets: {{ include (print $.Template.BasePath "/idp/secret.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/mosaic/configmap.yaml") . | sha256sum }}
+        checksum/secrets: {{ include (print $.Template.BasePath "/mosaic/secret.yaml") . | sha256sum }}
         {{- with .Values.mosaic.deployment.podAnnotations }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
