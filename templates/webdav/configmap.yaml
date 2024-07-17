@@ -8,6 +8,18 @@ data:
       {{$k }}: {{ default "" $v | quote }}
     {{- end }}
   {{- end }}
+  {{- if .Values.minio.enabled }}
+  S3_URL: {{ include "voltaserve.fullname" . }}-minio.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:9000
+  {{- else }}
+  S3_URL: {{ .Values.general.envs.S3_URL }}
+  {{- end  }}
+  S3_SECURE: {{ .Values.general.envs.S3_SECURE | quote }}
+  {{- if .Values.redis.enabled }}
+  REDIS_ADDRESS: {{ include "voltaserve.fullname" . }}-redis-master.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:{{ .Values.redis.master.service.ports.redis | default 6379 }}
+  {{- else }}
+  REDIS_ADDRESS: {{ .Values.general.envs.REDIS_ADDRESS }}
+  {{- end  }}
+
   IDP_URL: http://{{ include "voltaserve-idp.fullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:{{ .Values.idp.service.port }}
   API_URL: http://{{ include "voltaserve-api.fullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:{{ .Values.api.service.port }}
 
