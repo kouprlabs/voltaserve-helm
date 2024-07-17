@@ -27,8 +27,8 @@ spec:
   {{- end }}
   {{- if .Values.webdav.ingress.tls }}
   tls:
-  {{- with .Values.voltaserver.ingress.ui.tls}}
-    {{- . toYaml | nindent 4}}
+  {{- with .Values.webdav.ingress.tls}}
+    {{- toYaml . | nindent 4}}
   {{- end }}
   {{- end }}
   rules:
