@@ -5,7 +5,7 @@ imagePullSecrets: []
 # At the moment showcase mode values creates all required services during deployment with EmptyDirs
 # Be aware that it causes a lot of resources usage and might be dangerous to store data in it
 showcaseModeCockroach: &showcaseModeDb true
-showcaseModeMinio: &ShowcaseModeMinio true
+showcaseModeMinio: &showcaseModeMinio true
 clusterDomain: cluster.local
 uiPublicEndpoint: &uiPublicEndpoint your.ui.public.url
 webdavPublicEndpoint: &webdavPublicEndpoint your.webdav.public.url
