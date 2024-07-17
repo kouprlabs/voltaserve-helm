@@ -173,7 +173,7 @@ redis:
             enabled: false
     
 minio:
-    enabled: true
+    enabled: *showcaseModeMinio
     persistence:
         enabled: false
     provisioning:
@@ -189,7 +189,7 @@ minio:
 
     
 cockroachdb:
-    enabled: true
+    enabled: *showcaseModeDb
     statefulset:
         replicas: 1
     storage:
