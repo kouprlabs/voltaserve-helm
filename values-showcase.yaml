@@ -1,0 +1,207 @@
+imagePullSecrets: []
+
+# Those values must be filled in order to start voltaserve in "presentation" mode - this means least effort, not suggested for production
+# don't remove anchors (string that starts with "&")
+# At the moment showcase mode values creates all required services during deployment with EmptyDirs
+# Be aware that it causes a lot of resources usage and might be dangerous to store data in it
+showcaseModeCockroach: &showcaseModeDb true
+showcaseModeMinio: &ShowcaseModeMinio true
+clusterDomain: cluster.local
+uiPublicEndpoint: &uiPublicEndpoint your.ui.public.url
+webdavPublicEndpoint: &webdavPublicEndpoint your.webdav.public.url
+smtpHost: &smtpHost your.smtp.provider
+smtpPort: &smtpPort 123
+smtpSenderAddress: &smtpSenderAddress voltaserve-noreply@your.domain
+smtpSenderName: &smtpSenderName Voltaserve
+smtpSecureMode: &smtpSecureMode false
+smtpUserName: &smtpUserName voltaserveUser
+smtpPassword: &smtpPassword voltaserveSecurePassword
+uiTlsSecretName: &uiTlsSecretName voltaserve-ui-cert
+webdavTlsSecretName: &webdavTlsSecretName voltaserve-webdav-cert
+certManagerClusterIssuer: &certManagerClusterIssuer letsencrypt-http01
+ingressClassName: &ingressClassName nginx-public
+# This part is required when showcaseMode is disabled
+s3Url: &s3Url your.s3.url
+s3Region: &s3Region us-east-1
+s3Secure: &s3Secure false
+s3AccessKey: &s3AccessKey voltaserve
+s3SecretKey: &s3SecretKey voltaserve
+postgresConnectionString: &postgresConnectionString postgresql://voltaserve@voltaserve-cockroachdb:26257/voltaserve
+# End of needed values
+
+general:
+    smtp:
+        SMTP_HOST: *smtpHost
+        SMTP_PORT: *smtpPort
+        SMTP_SENDER_ADDRESS: *smtpSenderAddress
+        SMTP_SENDER_NAME: *smtpSenderName
+        SMTP_SECURE: *smtpSecureMode
+    envs:
+        S3_URL: *s3Url
+        S3_REGION: *s3Region
+        S3_SECURE: *s3Secure
+        POSTGRES_URL: *postgresConnectionString
+        PUBLIC_UI_URL: *uiPublicEndpoint
+        TOKEN_ISSUER: *uiPublicEndpoint
+        TOKEN_AUDIENCE: *uiPublicEndpoint
+    secrets:
+        SMTP_USERNAME: *smtpUserName
+        SMTP_PASSWORD: *smtpPassword
+        S3_ACCESS_KEY: *s3AccessKey
+        S3_SECRET_KEY: *s3SecretKey
+
+api:
+    service:
+        port: 8080
+        type: ClusterIP
+    deployment:
+        replicaCount: 1
+
+    
+conversion:
+    service:
+        port: 8083
+        type: ClusterIP
+    deployment:
+        replicaCount: 1
+
+idp:
+    service:
+        port: 8081
+        type: ClusterIP
+    deployment:
+        replicaCount: 1
+    
+language:
+    service:
+        port: 8084
+        type: ClusterIP
+    deployment:
+        replicaCount: 1
+
+mosaic:
+    service:
+        port: 8085
+        type: ClusterIP
+    deployment:
+        replicaCount: 1
+    
+ui:
+    ingress:
+        enabled: true
+        host: *uiPublicEndpoint
+        className: *ingressClassName
+        annotations:
+            cert-manager.io/cluster-issuer: *certManagerClusterIssuer
+            nginx.ingress.kubernetes.io/rewrite-target: /
+            nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+            nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+            nginx.ingress.kubernetes.io/proxy-body-size: 512m
+            nginx.ingress.kubernetes.io/server-snippets: '
+                location / {
+                    proxysetheader Upgrade $httpupgrade;
+                    proxyhttpversion 1.1;
+                    proxysetheader X-Forwarded-Host $httphost;
+                    proxysetheader X-Forwarded-Proto $scheme;
+                    proxysetheader X-Forwarded-For $remoteaddr;
+                    proxysetheader Host $host;
+                    proxysetheader Connection "upgrade";
+                    proxycachebypass $httpupgrade;
+                }'
+
+        tls:
+        - secretName: *uiTlsSecretName
+          hosts:
+          - *uiPublicEndpoint
+
+    service:
+        port: 3000
+        type: ClusterIP
+    deployment:
+        replicaCount: 1
+
+webdav:
+    ingress:
+        enabled: true
+        host: *webdavPublicEndpoint
+        className: *ingressClassName
+        annotations:
+            cert-manager.io/cluster-issuer: *certManagerClusterIssuer
+            nginx.ingress.kubernetes.io/rewrite-target: /
+            nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+            nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+            nginx.ingress.kubernetes.io/proxy-body-size: 512m
+            nginx.ingress.kubernetes.io/server-snippets: '
+                location / {
+                    proxysetheader Upgrade $httpupgrade;
+                    proxyhttpversion 1.1;
+                    proxysetheader X-Forwarded-Host $httphost;
+                    proxysetheader X-Forwarded-Proto $scheme;
+                    proxysetheader X-Forwarded-For $remoteaddr;
+                    proxysetheader Host $host;
+                    proxysetheader Connection "upgrade";
+                    proxycachebypass $httpupgrade;
+                }'
+
+        tls:
+        - secretName: *webdavTlsSecretName
+          hosts:
+          - *webdavPublicEndpoint
+    image:
+        repository: null
+        tag: null
+    service:
+        port: 8082
+        type: ClusterIP
+    deployment:
+        replicaCount: 1
+
+redis:
+    enabled: true
+    auth:
+        enabled: false
+        
+    architecture: standalone
+
+    master:
+        persistence:
+            enabled: false
+            
+    replica:
+        replicaCount: 1
+        persistence:
+            enabled: false
+    
+minio:
+    enabled: true
+    persistence:
+        enabled: false
+    provisioning:
+        enabled: true
+        users:
+        - username: voltaserve
+          password: voltaserve
+          disabled: false
+          policies:
+          - readwrite
+          - consoleAdmin
+          - diagnostics
+
+    
+cockroachdb:
+    enabled: true
+    statefulset:
+        replicas: 1
+    storage:
+        persistentVolume:
+            enabled: false
+    conf:
+        single-node: true
+    tls:
+        enabled: false
+    initJob:
+        dbUsername: test
+        dbPassword: test
+    
+meilisearch:
+    enabled: true
