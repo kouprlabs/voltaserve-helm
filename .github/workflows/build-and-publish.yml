@@ -21,9 +21,7 @@ on:
 jobs:
   build_and_push:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
+    permissions: write-all
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
