@@ -24,8 +24,8 @@ spec:
           - sh
           - -c
           - >
-              while ! pg_isready -U root -h {{ include "voltaserve.fullname" . }}-cockroachdb -p 26257; do sleep 1; done;
-              psql --file=/tmp/schema.sql -U root -h {{ include "voltaserve.fullname" . }}-cockroachdb -p 26257
+              while ! pg_isready -U root -h {{ .Release.Name }}-cockroachdb -p 26257; do sleep 1; done;
+              psql --file=/tmp/schema.sql -U root -h {{ .Release.Name }}-cockroachdb -p 26257
         volumeMounts:
           - name: sqlschema
             subPath: schema.sql

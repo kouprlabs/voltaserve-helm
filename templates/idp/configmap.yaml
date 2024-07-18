@@ -15,12 +15,12 @@ data:
   SMTP_SENDER_NAME: {{ .Values.general.smtp.SMTP_SENDER_NAME | quote}}
   SMTP_SECURE: {{ .Values.general.smtp.SMTP_SECURE | quote }}
   {{- if .Values.meilisearch.enabled }}
-  SEARCH_URL: http://{{ include "voltaserve.fullname" . }}-meilisearch.{{.Release.Namespace}}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:{{ default .Values.meilisearch.service.port 7700 }}
+  SEARCH_URL: http://{{ .Release.Name }}-meilisearch.{{.Release.Namespace}}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:{{ default .Values.meilisearch.service.port 7700 }}
   {{- else }}
   SEARCH_URL: {{ .Values.general.envs.SEARCH_URL }}
   {{- end  }}
   {{- if .Values.cockroachdb.enabled }}
-  POSTGRES_URL: postgresql://voltaserve@{{ include "voltaserve.fullname" . }}-cockroachdb:26257/voltaserve # to be updated by user for dynamic parsing
+  POSTGRES_URL: postgresql://voltaserve@{{ .Release.Name }}-cockroachdb:26257/voltaserve # to be updated by user for dynamic parsing
   {{- else }}
   POSTGRES_URL: {{ .Values.general.envs.POSTGRES_URL }}
   {{- end  }}

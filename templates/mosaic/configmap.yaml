@@ -9,7 +9,7 @@ data:
     {{- end }}
   {{- end }}
   {{- if .Values.minio.enabled }}
-  S3_URL: {{ include "voltaserve.fullname" . }}-minio.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:9000
+  S3_URL: {{ .Release.Name }}-minio.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:9000
   {{- else }}
   S3_URL: {{ .Values.general.envs.S3_URL }}
   {{- end  }}
