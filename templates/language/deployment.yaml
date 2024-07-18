@@ -41,7 +41,7 @@ spec:
             {{- toYaml .Values.language.deployment.security.podSecurityContext | nindent 12 }}
           {{- end }}
           {{- end }}
-          image: {{ .Values.language.image.repository | default "voltaserve/idp" }}:{{ .Values.language.image.tag | default .Chart.AppVersion }}
+          image: {{ .Values.language.image.repository | default "voltaserve/language" }}:{{ .Values.language.image.tag | default .Chart.AppVersion }}
           imagePullPolicy: {{ .Values.language.deployment.imagePullPolicy | default "IfNotPresent" }}
           ports:
             - name: http
