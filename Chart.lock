@@ -3,13 +3,13 @@ dependencies:
   repository: https://charts.bitnami.com/bitnami
   version: 19.6.1
 - name: minio
-  repository: https://charts.bitnami.com/bitnami
-  version: 14.6.20
+  repository: https://charts.min.io/
+  version: 5.2.0
 - name: cockroachdb
   repository: https://charts.cockroachdb.com/
   version: 13.0.2
 - name: meilisearch
   repository: https://meilisearch.github.io/meilisearch-kubernetes
   version: 0.8.0
-digest: sha256:826dae28ee5ce6c4c449842dc6723729b674d974425096d82a052877fa5de5f0
-generated: "2024-07-12T15:48:06.369406746+02:00"
+digest: sha256:6ab23c5997b9b1cc196da924c081190c9af0ae123e54227a9b7f07b9270a03e9
+generated: "2024-07-18T22:16:55.056103593+02:00"

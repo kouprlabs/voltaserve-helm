@@ -9,13 +9,13 @@ data:
     {{- end }}
   {{- end }}
   {{- if .Values.minio.enabled }}
-  S3_URL: {{ include "voltaserve.fullname" . }}-minio.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:9000
+  S3_URL: {{ .Release.Name }}-minio.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:9000
   {{- else }}
   S3_URL: {{ .Values.general.envs.S3_URL }}
   {{- end  }}
   S3_SECURE: {{ .Values.general.envs.S3_SECURE | quote }}
   {{- if .Values.redis.enabled }}
-  REDIS_ADDRESS: {{ include "voltaserve.fullname" . }}-redis-master.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:{{ .Values.redis.master.service.ports.redis | default 6379 }}
+  REDIS_ADDRESS: {{ .Release.Name }}-redis-master.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:{{ .Values.redis.master.service.ports.redis | default 6379 }}
   {{- else }}
   REDIS_ADDRESS: {{ .Values.general.envs.REDIS_ADDRESS }}
   {{- end  }}

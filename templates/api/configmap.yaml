@@ -24,23 +24,23 @@ data:
   SECURITY_CORS_ORIGINS: {{ .Values.general.envs.PUBLIC_UI_URL }}
   {{- end  }}
   {{- if .Values.minio.enabled }}
-  S3_URL: {{ include "voltaserve.fullname" . }}-minio.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:9000
+  S3_URL: {{ .Release.Name }}-minio.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:9000
   {{- else }}
   S3_URL: {{ .Values.general.envs.S3_URL }}
   {{- end  }}
   S3_SECURE: {{ .Values.general.envs.S3_SECURE | quote }}
   {{- if .Values.redis.enabled }}
-  REDIS_ADDRESS: {{ include "voltaserve.fullname" . }}-redis-master.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:{{ .Values.redis.master.service.ports.redis | default 6379 }}
+  REDIS_ADDRESS: {{ .Release.Name }}-redis-master.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:{{ .Values.redis.master.service.ports.redis | default 6379 }}
   {{- else }}
   REDIS_ADDRESS: {{ .Values.general.envs.REDIS_ADDRESS }}
   {{- end  }}
   {{- if .Values.cockroachdb.enabled }}
-  POSTGRES_URL: postgresql://voltaserve@{{ include "voltaserve.fullname" . }}-cockroachdb:26257/voltaserve # to be updated by user for dynamic parsing
+  POSTGRES_URL: postgresql://voltaserve@{{ .Release.Name }}-cockroachdb:26257/voltaserve # to be updated by user for dynamic parsing
   {{- else }}
   POSTGRES_URL: {{ .Values.general.envs.POSTGRES_URL }}
   {{- end  }}
   {{- if .Values.meilisearch.enabled }}
-  SEARCH_URL: http://{{ include "voltaserve.fullname" . }}-meilisearch.{{.Release.Namespace}}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:{{ .Values.meilisearch.service.port | default 7700 }}
+  SEARCH_URL: http://{{ .Release.Name }}-meilisearch.{{.Release.Namespace}}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:{{ .Values.meilisearch.service.port | default 7700 }}
   {{- else }}
   SEARCH_URL: {{ .Values.general.envs.SEARCH_URL }}
   {{- end  }}
