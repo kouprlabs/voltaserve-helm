@@ -176,17 +176,10 @@ minio:
     enabled: *showcaseModeMinio
     persistence:
         enabled: false
-    provisioning:
-        enabled: true
-        users:
-        - username: voltaserve
-          password: voltaserve
-          disabled: false
-          policies:
-          - readwrite
-          - consoleAdmin
-          - diagnostics
-
+    users:
+    - accessKey: voltaserve
+      secretKey: voltaserve
+      policies: consoleAdmin
     
 cockroachdb:
     enabled: *showcaseModeDb
