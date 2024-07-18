@@ -8,7 +8,7 @@ data:
       {{$k }}: {{ default "" $v | quote }}
     {{- end }}
   {{- end }}
-  API_URL: http://{{ include "voltaserve-api.fullname" . }} .{{.Release.Namespace}}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:{{ .Values.api.service.port }}
+  API_URL: http://{{ include "voltaserve-api.fullname" . }}.{{.Release.Namespace}}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:{{ .Values.api.service.port }}
   LANGUAGE_URL: http://{{ include "voltaserve-language.fullname" . }}.{{.Release.Namespace}}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:{{ .Values.language.service.port }}
   MOSAIC_URL: http://{{ include "voltaserve-mosaic.fullname" . }}.{{.Release.Namespace}}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:{{ .Values.mosaic.service.port }}
   {{- if .Values.minio.enabled }}
