@@ -4,9 +4,14 @@ metadata:
   name: {{ include "voltaserve-webdav.fullname" . }}
   labels:
     {{- include "voltaserve-webdav.labels" . | nindent 4 }}
-  {{- with .Values.webdav.service.annotations }}
+  {{- if or .Values.webdav.service.annotations (.Values.globals).serviceAnnotations }}
   annotations:
+  {{- with .Values.webdav.service.annotations }}
     {{ toYaml . | indent 4 }}
+  {{- end }}
+  {{- with (.Values.globals).serviceAnnotations }}
+    {{ toYaml . | indent 4 }}
+  {{- end }}
   {{- end }}
 spec:
   ipFamilyPolicy: SingleStack

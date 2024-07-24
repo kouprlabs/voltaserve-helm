@@ -4,9 +4,14 @@ metadata:
   name: {{ include "voltaserve-mosaic.fullname" . }}
   labels:
     {{- include "voltaserve-mosaic.labels" . | nindent 4 }}
-  {{- with .Values.mosaic.service.annotations }}
+  {{- if or .Values.mosaic.service.annotations (.Values.global).serviceAnnotations }}
   annotations:
+  {{- with .Values.mosaic.service.annotations }}
     {{ toYaml . | indent 4 }}
+  {{- end }}
+  {{- with (.Values.globals).serviceAnnotations }}
+    {{ toYaml . | indent 4 }}
+  {{- end }}
   {{- end }}
 spec:
   ipFamilyPolicy: SingleStack

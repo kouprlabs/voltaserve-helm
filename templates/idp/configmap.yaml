@@ -9,6 +9,11 @@ data:
       {{$k }}: {{ default "" $v | quote }}
     {{- end }}
   {{- end }}
+  {{- if .Values.general.sharedEnvs }}
+    {{- range $k,$v := .Values.general.sharedEnvs }}
+      {{$k }}: {{ default "" $v | quote }}
+    {{- end }}
+  {{- end }}
   SMTP_HOST: {{ .Values.general.smtp.SMTP_HOST | quote}}
   SMTP_PORT: {{ .Values.general.smtp.SMTP_PORT | quote}}
   SMTP_SENDER_ADDRESS: {{ .Values.general.smtp.SMTP_SENDER_ADDRESS | quote}}
@@ -17,19 +22,23 @@ data:
   {{- if .Values.meilisearch.enabled }}
   SEARCH_URL: http://{{ .Release.Name }}-meilisearch.{{.Release.Namespace}}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:{{ default .Values.meilisearch.service.port 7700 }}
   {{- else }}
-  SEARCH_URL: {{ .Values.general.envs.SEARCH_URL }}
+  SEARCH_URL: {{ .Values.general.search.SEARCH_URL }}
   {{- end  }}
   {{- if .Values.cockroachdb.enabled }}
-  POSTGRES_URL: postgresql://voltaserve@{{ .Release.Name }}-cockroachdb:26257/voltaserve # to be updated by user for dynamic parsing
+  POSTGRES_URL: postgresql://voltaserve@{{ .Release.Name }}-cockroachdb.{{ .Release.Namespace }}.{{ .Values.clusterDomain | default "cluster.local" }}:26257/voltaserve
   {{- else }}
-  POSTGRES_URL: {{ .Values.general.envs.POSTGRES_URL }}
+  POSTGRES_URL: {{ .Values.general.database.POSTGRES_URL }}
   {{- end  }}
   {{- if .Values.ui.ingress.enabled }}
   PUBLIC_UI_URL: https://{{ .Values.ui.ingress.host }}
   TOKEN_ISSUER: https://{{ .Values.ui.ingress.host }}
-  SECURITY_CORS_ORIGINS: https://{{ .Values.ui.ingress.host }}
+  TOKEN_AUDIENCE: https://{{ .Values.ui.ingress.host }}
+  CORS_ORIGINS: https://{{ .Values.ui.ingress.host }}
   {{- else }}
-  PUBLIC_UI_URL: {{ .Values.general.envs.PUBLIC_UI_URL }}
-  SECURITY_CORS_ORIGINS: {{ .Values.general.envs.PUBLIC_UI_URL }}
-  TOKEN_ISSUER: {{ .Values.general.envs.PUBLIC_UI_URL }}
+  PUBLIC_UI_URL: {{ .Values.general.endpoint.PUBLIC_UI_URL }}
+  TOKEN_ISSUER: {{ .Values.general.endpoint.PUBLIC_UI_URL }}
+  TOKEN_AUDIENCE: {{ .Values.general.endpoint.PUBLIC_UI_URL }}
+  CORS_ORIGINS: {{ .Values.general.endpoint.PUBLIC_UI_URL }}
   {{- end  }}
+  TOKEN_ACCESS_TOKEN_LIFETIME: {{ .Values.general.jwt.TOKEN_ACCESS_TOKEN_LIFETIME | default 86400 | quote }}
+  TOKEN_REFRESH_TOKEN_LIFETIME: {{ .Values.general.jwt.TOKEN_REFRESH_TOKEN_LIFETIME | default "2592000" | int | quote }}

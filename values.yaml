@@ -3,328 +3,367 @@ imagePullSecrets: []
 clusterDomain: cluster.local
 
 general:
+  smtp:
+    SMTP_HOST: your.smtp.server
+    SMTP_PORT: 123
+    SMTP_SENDER_ADDRESS: voltaserve-noreply@your.smtp.host
+    SMTP_SENDER_NAME: Voltaserve
+    SMTP_SECURE: false
+  # Those values need to be filled if minio.enabled is false
+  s3:
+    S3_URL: your.minio.instance
+    S3_REGION: us-east-1
+    S3_SECURE: false
+  # Those values need to be filled if cockroachdb.enabled is false
+  database:
+    POSTGRES_URL: postgresql://voltaserve@your.database.host:26257/voltaserve
+  # Those values need to be filled if redis.enabled is false
+  redis:
+    REDIS_ADDRESS: your.redis.instance
+    REDIS_DB: 0
+  # Those values need to be filled if meilisearch.enabled is false
+  search:
+    SEARCH_URL: your.meilisearch.instance
+  # Those values must be filled if You don't use ingress from our chart (keep in mind that You need two ingresses - ui and webdav)
+  endpoint:
+    PUBLIC_UI_URL: your.public.ui.url
+  jwt:
+    TOKEN_ACCESS_TOKEN_LIFETIME: 86400
+    TOKEN_REFRESH_TOKEN_LIFETIME: 2592000
+  limits:
+    LIMITS_FILE_UPLOAD_MB: 10000
+    LIMITS_FILE_PROCESSING_MB: video:10000,*:1000
+    DEFAULTS_WORKSPACE_STORAGE_CAPACITY_MB: 100000
+    LIMITS_EXTERNAL_COMMAND_TIMEOUT_SECONDS: 900
+    LIMITS_IMAGE_PREVIEW_MAX_WIDTH: 512
+    LIMITS_IMAGE_PREVIEW_MAX_HEIGHT: 512
+    LIMITS_MULTIPART_BODY_LENGTH_LIMIT_MB: 5000
+  # This option spreads given env vars over all existing configmaps
+  sharedEnvs: {}
+
+  secrets:
+    jwt:
+      SECURITY_JWT_SIGNING_KEY: null
+    api:
+      SECURITY_API_KEY: null
+    s3:
+      S3_ACCESS_KEY: voltaserve
+      S3_SECRET_KEY: voltaserve
     smtp:
-        SMTP_HOST: YOUR.SMTP.HOST
-        SMTP_PORT: SMTP PORT
-        SMTP_SENDER_ADDRESS: voltaserve-noreply@YOUR.SMTP.HOST
-        SMTP_SENDER_NAME: Voltaserve
-        SMTP_SECURE: false
-    envs:
-        S3_URL: YOUR OWN S3 URL
-        S3_REGION: REGION_THAT_MINIO_WILL_PROVISION
-        S3_SECURE: false
-        POSTGRES_URL: PSQL connection string for cockroach databse
-        PUBLIC_UI_URL: Your public url if you don't use ingress from our chart
-        REDIS_ADDRESS: Your redis instance url
-        SEARCH_URL: Your meilisearch instance
-        TOKEN_ISSUER: localhost
-        TOKEN_AUDIENCE: localhost
-        TOKEN_ACCESS_TOKEN_LIFETIME: 86400
-        TOKEN_REFRESH_TOKEN_LIFETIME: 2592000
-    secrets:
-        SMTP_USERNAME: SMTP USERNAME
-        SMTP_PASSWORD: SMTP PASSWORD
-        SECURITY_JWT_SIGNING_KEY: &jwt_signing_key FIXED JWT SIGNING KEY
-        SECURITY_API_KEY: SECURITY APIKEY
-        S3_ACCESS_KEY: voltaserve
-        S3_SECRET_KEY: voltaserve
+      SMTP_USERNAME: smtp username
+      SMTP_PASSWORD: smtp password
+    # This option spreads given secret over all existing secrets
+    sharedSecrets: {}
+
+globals:
+  podAnnotations:
+    {}
+  serviceAnnotations:
+    {}
+  podLabels:
+    {}
+  nodeSelectors:
+    {}
+  ingressAnnotations:
+    {}
+
 
 api:
-    existingSecret: null
-    image:
-        repository: null
-        tag: null
-    service:
-        port: 8080
-        type: ClusterIP
-        annotations:
-            {}
-    envs:
+  existingSecret: null
+  image:
+    repository: null
+    tag: null
+  service:
+    port: 8080
+    type: ClusterIP
+    annotations:
+      {}
+  envs:
+    {}
+  deployment:
+    imagePullPolicy:
+    replicaCount: 1
+    podAnnotations:
+      {}
+    podLabels:
+      {}
+    livenessProbePath: null
+    readinessProbePath: null
+    security:
+      securityContext:
         {}
-    deployment:
-        imagePullPolicy:
-        replicaCount: 1
-        podAnnotations:
-            {}
-        podLabels:
-            {}
-        livenessProbePath: null
-        readinessProbePath: null
-        security:
-            securityContext:
-                {}
-            podSecurityContext:
-                {}
-        resources:
-            {}
-        volumeMounts:
-            {}
-        volumes:
-            {}
-        nodeSelector:
-            {}
-        affinity:
-            {}
-        tolerations:
-            {}
+      podSecurityContext:
+        {}
+    resources:
+      {}
+    volumeMounts:
+      {}
+    volumes:
+      {}
+    nodeSelector:
+      {}
+    affinity:
+      {}
+    tolerations:
+      {}
 
-    
+
 conversion:
-    existingSecret: null
-    image:
-        repository: null
-        tag: null
-    service:
-        port: 8083
-        type: ClusterIP
-        annotations:
-            {}
-    envs:
+  existingSecret: null
+  image:
+    repository: null
+    tag: null
+  service:
+    port: 8083
+    type: ClusterIP
+    annotations:
+      {}
+  envs:
+    {}
+  deployment:
+    imagePullPolicy:
+    replicaCount: 1
+    podAnnotations:
+      {}
+    podLabels:
+      {}
+    livenessProbePath: null
+    readinessProbePath: null
+    security:
+      securityContext:
         {}
-    deployment:
-        imagePullPolicy:
-        replicaCount: 1
-        podAnnotations:
-            {}
-        podLabels:
-            {}
-        livenessProbePath: null
-        readinessProbePath: null
-        security:
-            securityContext:
-                {}
-            podSecurityContext:
-                {}
-        resources:
-            {}
-        volumeMounts:
-            {}
-        volumes:
-            {}
-        nodeSelector:
-            {}
-        affinity:
-            {}
-        tolerations:
-            {}
+      podSecurityContext:
+        {}
+    resources:
+      {}
+    volumeMounts:
+      {}
+    volumes:
+      {}
+    nodeSelector:
+      {}
+    affinity:
+      {}
+    tolerations:
+      {}
 
 idp:
-    existingSecret: null
-    image:
-        repository: null
-        tag: null
-    service:
-        port: 8081
-        type: ClusterIP
-        annotations:
-            {}
-    envs:
+  existingSecret: null
+  image:
+    repository: null
+    tag: null
+  service:
+    port: 8081
+    type: ClusterIP
+    annotations:
+      {}
+  envs:
+    {}
+  deployment:
+    imagePullPolicy:
+    replicaCount: 1
+    podAnnotations:
+      {}
+    podLabels:
+      {}
+    livenessProbePath: null
+    readinessProbePath: null
+    security:
+      securityContext:
         {}
-    deployment:
-        imagePullPolicy:
-        replicaCount: 1
-        podAnnotations:
-            {}
-        podLabels:
-            {}
-        livenessProbePath: null
-        readinessProbePath: null
-        security:
-            securityContext:
-                {}
-            podSecurityContext:
-                {}
-        resources:
-            {}
-        volumeMounts:
-            {}
-        volumes:
-            {}
-        nodeSelector:
-            {}
-        affinity:
-            {}
-        tolerations:
-            {}
-        
-    
+      podSecurityContext:
+        {}
+    resources:
+      {}
+    volumeMounts:
+      {}
+    volumes:
+      {}
+    nodeSelector:
+      {}
+    affinity:
+      {}
+    tolerations:
+      {}
+
+
 language:
-    image:
-        repository: null
-        tag: null
-    service:
-        port: 8084
-        type: ClusterIP
-        annotations:
-            {}
-    deployment:
-        imagePullPolicy:
-        replicaCount: 1
-        podAnnotations:
-            {}
-        podLabels:
-            {}
-        livenessProbePath: null
-        readinessProbePath: null
-        security:
-            securityContext:
-                {}
-            podSecurityContext:
-                {}
-        resources:
-            {}
-        volumeMounts:
-            {}
-        volumes:
-            {}
-        nodeSelector:
-            {}
-        affinity:
-            {}
-        tolerations:
-            {}
+  image:
+    repository: null
+    tag: null
+  service:
+    port: 8084
+    type: ClusterIP
+    annotations:
+      {}
+  deployment:
+    imagePullPolicy:
+    replicaCount: 1
+    podAnnotations:
+      {}
+    podLabels:
+      {}
+    livenessProbePath: null
+    readinessProbePath: null
+    security:
+      securityContext:
+        {}
+      podSecurityContext:
+        {}
+    resources:
+      {}
+    volumeMounts:
+      {}
+    volumes:
+      {}
+    nodeSelector:
+      {}
+    affinity:
+      {}
+    tolerations:
+      {}
 
 mosaic:
-    existingSecret: null
-    image:
-        repository: null
-        tag: null
-    service:
-        port: 8085
-        type: ClusterIP
-        annotations:
-            {}
-    envs:
+  existingSecret: null
+  image:
+    repository: null
+    tag: null
+  service:
+    port: 8085
+    type: ClusterIP
+    annotations:
+      {}
+  envs:
+    {}
+  deployment:
+    imagePullPolicy:
+    replicaCount: 1
+    podAnnotations:
+      {}
+    podLabels:
+      {}
+    livenessProbePath: null
+    readinessProbePath: null
+    security:
+      securityContext:
         {}
-    deployment:
-        imagePullPolicy:
-        replicaCount: 1
-        podAnnotations:
-            {}
-        podLabels:
-            {}
-        livenessProbePath: null
-        readinessProbePath: null
-        security:
-            securityContext:
-                {}
-            podSecurityContext:
-                {}
-        resources:
-            {}
-        volumeMounts:
-            {}
-        volumes:
-            {}
-        nodeSelector:
-            {}
-        affinity:
-            {}
-        tolerations:
-            {}
-    
+      podSecurityContext:
+        {}
+    resources:
+      {}
+    volumeMounts:
+      {}
+    volumes:
+      {}
+    nodeSelector:
+      {}
+    affinity:
+      {}
+    tolerations:
+      {}
+
 ui:
-    existingSecret: null
-    ingress:
-        enabled: true
-        host: ui.public.url
-        annotations:
-            {}
-        className: nginx-public
-        tls:
-            []
-    image:
-        repository: null
-        tag: null
-    service:
-        port: 3000
-        type: ClusterIP
-        annotations:
-            {}
-    envs:
+  existingSecret: null
+  ingress:
+    enabled: true
+    host: ui.public.url
+    annotations:
+      {}
+    className: nginx-public
+    tls:
+      []
+  image:
+    repository: null
+    tag: null
+  service:
+    port: 3000
+    type: ClusterIP
+    annotations:
+      {}
+  envs:
+    {}
+  deployment:
+    imagePullPolicy:
+    replicaCount: 1
+    podAnnotations:
+      {}
+    podLabels:
+      {}
+    livenessProbePath: null
+    readinessProbePath: null
+    security:
+      securityContext:
         {}
-    deployment:
-        imagePullPolicy:
-        replicaCount: 1
-        podAnnotations:
-            {}
-        podLabels:
-            {}
-        livenessProbePath: null
-        readinessProbePath: null
-        security:
-            securityContext:
-                {}
-            podSecurityContext:
-                {}
-        resources:
-            {}
-        volumeMounts:
-            {}
-        volumes:
-            {}
-        nodeSelector:
-            {}
-        affinity:
-            {}
-        tolerations:
-            {}
+      podSecurityContext:
+        {}
+    resources:
+      {}
+    volumeMounts:
+      {}
+    volumes:
+      {}
+    nodeSelector:
+      {}
+    affinity:
+      {}
+    tolerations:
+      {}
 
 webdav:
-    existingSecret: null
-    ingress:
-        enabled: true
-        annotations:
-            {}
-        host: webdav.public.url
-        className: nginx-public
-        tls:
-            []
-    image:
-        repository: null
-        tag: null
-    service:
-        port: 8082
-        type: ClusterIP
-        annotations:
-            {}
-    envs:
+  existingSecret: null
+  ingress:
+    enabled: true
+    annotations:
+      {}
+    host: webdav.public.url
+    className: nginx-public
+    tls:
+      []
+  image:
+    repository: null
+    tag: null
+  service:
+    port: 8082
+    type: ClusterIP
+    annotations:
+      {}
+  envs:
+    {}
+  deployment:
+    imagePullPolicy:
+    replicaCount: 1
+    podAnnotations:
+      {}
+    podLabels:
+      {}
+    livenessProbePath: null
+    readinessProbePath: null
+    security:
+      securityContext:
         {}
-    deployment:
-        imagePullPolicy:
-        replicaCount: 1
-        podAnnotations:
-            {}
-        podLabels:
-            {}
-        livenessProbePath: null
-        readinessProbePath: null
-        security:
-            securityContext:
-                {}
-            podSecurityContext:
-                {}
-        resources:
-            {}
-        volumeMounts:
-            {}
-        volumes:
-            {}
-        nodeSelector:
-            {}
-        affinity:
-            {}
-        tolerations:
-            {}
+      podSecurityContext:
+        {}
+    resources:
+      {}
+    volumeMounts:
+      {}
+    volumes:
+      {}
+    nodeSelector:
+      {}
+    affinity:
+      {}
+    tolerations:
+      {}
 
 redis:
-    enabled: false
+  enabled: false
 
 minio:
-    enabled: false
+  enabled: false
 
 cockroachdb:
-    enabled: false
+  enabled: false
 
 meilisearch:
-    enabled: false
+  enabled: false

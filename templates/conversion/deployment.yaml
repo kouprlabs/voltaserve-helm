@@ -13,10 +13,14 @@ spec:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/conversion/configmap.yaml") . | sha256sum }}
-        checksum/secrets: {{ include (print $.Template.BasePath "/conversion/secret.yaml") . | sha256sum }}
-        {{- with .Values.conversion.deployment.podAnnotations }}
-          {{- toYaml . | nindent 8 }}
-        {{- end }}
+        checksum/secret: {{ include (print $.Template.BasePath "/conversion/secret.yaml") . | sha256sum }}
+        checksum/secret-api: {{ include (print $.Template.BasePath "/sharedSecrets/secret.yaml") . | sha256sum }}
+          {{- with .Values.conversion.deployment.podAnnotations }}
+            {{- toYaml . | nindent 8 }}
+          {{- end }}
+          {{- with (.Values.globals).podAnnotations }}
+            {{- toYaml . | nindent 8 }}
+          {{- end }}
       labels:
         {{- include "voltaserve-conversion.labels" . | nindent 8 }}
         {{- with .Values.conversion.deployment.podLabels }}
@@ -72,6 +76,8 @@ spec:
               name: {{ include "voltaserve-conversion.fullname" . }}
           - secretRef:
               name: {{ include "voltaserve-conversion.fullname" . }}
+          - secretRef:
+              name: {{ include "voltaserve.fullname" . }}-security-apikey
           {{- if .Values.conversion.existingSecret }}
           - secretRef:
               name: {{ .Values.conversion.existingSecret }}
@@ -80,9 +86,14 @@ spec:
       volumes:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.conversion.deployment.nodeSelector }}
+      {{- if or .Values.conversion.deployment.nodeSelector (.Values.globals).nodeSelectors }}
       nodeSelector:
+      {{- with .Values.conversion.deployment.nodeSelector }}
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with (.Values.globals).nodeSelectors }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- end }}
       {{- with .Values.conversion.deployment.affinity }}
       affinity:

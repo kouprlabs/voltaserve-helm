@@ -17,9 +17,14 @@ metadata:
   name: {{ include "voltaserve-webdav.fullname" . }}
   labels:
     {{- include "voltaserve.commonLabels" . | nindent 4 }}
-  {{- with .Values.webdav.ingress.annotations }}
+  {{- if or .Values.webdav.ingress.annotations (.Values.globals).ingressAnnotations }}
   annotations:
+  {{- with .Values.webdav.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with (.Values.globals).ingressAnnotations }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   {{- end }}
 spec:
   {{- if and .Values.webdav.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
