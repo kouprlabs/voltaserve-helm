@@ -17,9 +17,14 @@ metadata:
   name: {{ include "voltaserve-ui.fullname" . }}
   labels:
     {{- include "voltaserve.commonLabels" . | nindent 4 }}
-  {{- with .Values.ui.ingress.annotations }}
+  {{- if or .Values.ui.ingress.annotations (.Values.globals).ingressAnnotations }}
   annotations:
+  {{- with .Values.ui.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with (.Values.globals).ingressAnnotations }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   {{- end }}
 spec:
   {{- if and .Values.ui.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}

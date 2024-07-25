@@ -8,6 +8,11 @@ data:
       {{ $k }}: {{ $v | quote }}
     {{- end }}
   {{- end }}
+  {{- if .Values.general.sharedEnvs }}
+    {{- range $k,$v := .Values.general.sharedEnvs }}
+      {{$k }}: {{ default "" $v | quote }}
+    {{- end }}
+  {{- end }}
   SMTP_HOST: {{ .Values.general.smtp.SMTP_HOST | quote }}
   SMTP_PORT: {{ .Values.general.smtp.SMTP_PORT | quote }}
   SMTP_SENDER_ADDRESS: {{ .Values.general.smtp.SMTP_SENDER_ADDRESS | quote }}
@@ -20,27 +25,34 @@ data:
   PUBLIC_UI_URL: https://{{ .Values.ui.ingress.host }}
   SECURITY_CORS_ORIGINS: https://{{ .Values.ui.ingress.host }}
   {{- else }}
-  PUBLIC_UI_URL: {{ .Values.general.envs.PUBLIC_UI_URL }}
-  SECURITY_CORS_ORIGINS: {{ .Values.general.envs.PUBLIC_UI_URL }}
+  PUBLIC_UI_URL: {{ .Values.general.endpoint.PUBLIC_UI_URL }}
+  SECURITY_CORS_ORIGINS: {{ .Values.general.endpoint.PUBLIC_UI_URL }}
   {{- end  }}
   {{- if .Values.minio.enabled }}
   S3_URL: {{ .Release.Name }}-minio.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:9000
+  S3_SECURE: "false"
+  S3_REGION: "us-east-1"
   {{- else }}
-  S3_URL: {{ .Values.general.envs.S3_URL }}
+  S3_URL: {{ .Values.general.s3.S3_URL }}
+  S3_SECURE: {{ .Values.general.s3.S3_SECURE | default false | quote }}
+  S3_REGION: {{ .Values.general.s3.S3_REGION | default "us-east-1" | quote }}
   {{- end  }}
-  S3_SECURE: {{ .Values.general.envs.S3_SECURE | quote }}
   {{- if .Values.redis.enabled }}
   REDIS_ADDRESS: {{ .Release.Name }}-redis-master.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:{{ .Values.redis.master.service.ports.redis | default 6379 }}
   {{- else }}
-  REDIS_ADDRESS: {{ .Values.general.envs.REDIS_ADDRESS }}
+  REDIS_ADDRESS: {{ .Values.general.redis.REDIS_ADDRESS }}
   {{- end  }}
+  REDIS_DB: {{ .Values.general.redis.REDIS_DB | default 0 | quote }}
   {{- if .Values.cockroachdb.enabled }}
-  POSTGRES_URL: postgresql://voltaserve@{{ .Release.Name }}-cockroachdb:26257/voltaserve # to be updated by user for dynamic parsing
+  POSTGRES_URL: postgresql://voltaserve@{{ .Release.Name }}-cockroachdb.{{ .Release.Namespace }}.{{ .Values.clusterDomain | default "cluster.local" }}:26257/voltaserve
   {{- else }}
-  POSTGRES_URL: {{ .Values.general.envs.POSTGRES_URL }}
+  POSTGRES_URL: {{ .Values.general.database.POSTGRES_URL }}
   {{- end  }}
   {{- if .Values.meilisearch.enabled }}
   SEARCH_URL: http://{{ .Release.Name }}-meilisearch.{{.Release.Namespace}}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:{{ .Values.meilisearch.service.port | default 7700 }}
   {{- else }}
-  SEARCH_URL: {{ .Values.general.envs.SEARCH_URL }}
+  SEARCH_URL: {{ .Values.general.search.SEARCH_URL }}
   {{- end  }}
+  LIMITS_FILE_UPLOAD_MB: {{ .Values.general.limits.LIMITS_FILE_UPLOAD_MB | default 10000 | quote }}
+  LIMITS_FILE_PROCESSING_MB: {{ .Values.general.limits.LIMITS_FILE_PROCESSING_MB | default "video:10000,*:1000" | quote }}
+  DEFAULTS_WORKSPACE_STORAGE_CAPACITY_MB: {{ .Values.general.limits.DEFAULTS_WORKSPACE_STORAGE_CAPACITY_MB | default 100000 | quote }}

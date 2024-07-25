@@ -4,9 +4,14 @@ metadata:
   name: {{ include "voltaserve-ui.fullname" . }}
   labels:
     {{- include "voltaserve-ui.labels" . | nindent 4 }}
-  {{- with .Values.ui.service.annotations }}
+  {{- if or .Values.ui.service.annotations (.Values.global).serviceAnnotations }}
   annotations:
+  {{- with .Values.ui.service.annotations }}
     {{ toYaml . | indent 4 }}
+  {{- end }}
+  {{- with (.Values.globals).serviceAnnotations }}
+    {{ toYaml . | indent 4 }}
+  {{- end }}
   {{- end }}
 spec:
   ipFamilyPolicy: SingleStack

@@ -13,10 +13,14 @@ spec:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/idp/configmap.yaml") . | sha256sum }}
-        checksum/secrets: {{ include (print $.Template.BasePath "/idp/secret.yaml") . | sha256sum }}
-        {{- with .Values.idp.deployment.podAnnotations }}
-          {{- toYaml . | nindent 8 }}
-        {{- end }}
+        checksum/secret: {{ include (print $.Template.BasePath "/idp/secret.yaml") . | sha256sum }}
+        checksum/secret-api: {{ include (print $.Template.BasePath "/sharedSecrets/secret.yaml") . | sha256sum }}
+          {{- with .Values.idp.deployment.podAnnotations }}
+            {{- toYaml . | nindent 8 }}
+          {{- end }}
+          {{- with (.Values.globals).podAnnotations }}
+            {{- toYaml . | nindent 8 }}
+          {{- end }}
       labels:
         {{- include "voltaserve-idp.labels" . | nindent 8 }}
         {{- with .Values.idp.deployment.podLabels }}
@@ -72,6 +76,8 @@ spec:
               name: {{ include "voltaserve-idp.fullname" . }}
           - secretRef:
               name: {{ include "voltaserve-idp.fullname" . }}
+          - secretRef:
+              name: {{ include "voltaserve.fullname" . }}-jwt-signkey
           {{- if .Values.idp.existingSecret }}
           - secretRef:
               name: {{ .Values.idp.existingSecret }}
@@ -80,9 +86,14 @@ spec:
       volumes:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.idp.deployment.nodeSelector }}
+      {{- if or .Values.idp.deployment.nodeSelector (.Values.globals).nodeSelectors }}
       nodeSelector:
+      {{- with .Values.idp.deployment.nodeSelector }}
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with (.Values.globals).nodeSelectors }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- end }}
       {{- with .Values.idp.deployment.affinity }}
       affinity:
