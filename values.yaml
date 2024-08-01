@@ -392,12 +392,8 @@ minio:
 #  persistence:
 #    enabled: false
 #
-#  rootPassword: admin1234
-#  rootUser: admin
-#  users:
-#    - accessKey: voltaserve
-#      secretKey: voltaserve
-#      policy: readwrite
+#  rootPassword: voltaserve
+#  rootUser: voltaserve
   enabled: false
 
 cockroachdb:

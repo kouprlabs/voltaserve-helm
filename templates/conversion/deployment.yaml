@@ -57,7 +57,7 @@ spec:
             httpGet:
               path: {{ .Values.conversion.deployment.livenessProbePath | default "/v2/health" }}
               port: 8083
-            initialDelaySeconds: 300
+            initialDelaySeconds: 900
           readinessProbe:
             httpGet:
               path: {{ .Values.conversion.deployment.readinessProbePath | default "/v2/health" }}
