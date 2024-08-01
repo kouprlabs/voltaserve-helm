@@ -13,8 +13,8 @@ data:
       {{$k }}: {{ default "" $v | quote }}
     {{- end }}
   {{- end }}
-  {{- if .Values.cockroachdb.enabled }}
-  DATABASE_URL: postgresql://root@{{ .Release.Name }}-cockroachdb.{{ .Release.Namespace }}.{{ .Values.clusterDomain | default "cluster.local" }}:26257/postgres
+  {{- if and (.Values.cockroachdb.statefulset).env .Values.cockroachdb.enabled }}
+  DATABASE_URL: postgresql://voltaserve@{{ .Release.Name }}-cockroachdb.{{ .Release.Namespace }}.{{ .Values.clusterDomain | default "cluster.local" }}:26257/voltaserve
   {{- else }}
-  DATABASE_URL: {{ .Values.general.database.MIGRATIONS_DATABASE_URL }}
+  DATABASE_URL: {{ .Values.general.database.POSTGRES_URL }}
   {{- end  }}

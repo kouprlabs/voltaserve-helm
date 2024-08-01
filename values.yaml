@@ -367,13 +367,60 @@ webdav:
       {}
 
 redis:
+# For test purposes we recommend below settings
+#  enabled: true
+#  auth:
+#    enabled: false
+#
+#  architecture: standalone
+#
+#  master:
+#    persistence:
+#      enabled: false
+#
+#  replica:
+#    replicaCount: 1
+#    persistence:
+#      enabled: false
   enabled: false
 
 minio:
+# For test purposes we recommend below settings
+#  enabled: true
+#  mode: standalone
+#  replicas: 1
+#  persistence:
+#    enabled: false
+#
+#  rootPassword: admin1234
+#  rootUser: admin
+#  users:
+#    - accessKey: voltaserve
+#      secretKey: voltaserve
+#      policy: readwrite
   enabled: false
 
 cockroachdb:
+# For test purposes we recommend below settings
+#  enabled: false
+#  statefulset:
+#    replicas: 1
+#    env:
+#      - COCKROACH_DATABASE: voltaserve
+#      - COCKROACH_USER: voltaserve
+#
+#  storage:
+#    persistentVolume:
+#      enabled: false
+#
+#  conf:
+#    single-node: true
+#
+#  tls:
+#    enabled: false
   enabled: false
 
 meilisearch:
+# For test purposes we recommend below settings
+#  enabled: true
   enabled: false
