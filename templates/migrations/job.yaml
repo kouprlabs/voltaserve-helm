@@ -22,7 +22,7 @@ spec:
       - name: {{ include "voltaserve-migrations.fullname" . }}
         image: {{ .Values.api.image.repository | default "voltaserve/migrations" }}:{{ .Values.api.image.tag | default .Chart.AppVersion }}
         imagePullPolicy: {{ .Values.api.deployment.imagePullPolicy | default "IfNotPresent" }}
-        envsFrom:
+        envFrom:
           - configMapRef:
               name: {{ include "voltaserve-migrations.fullname" . }}
       restartPolicy: OnFailure
