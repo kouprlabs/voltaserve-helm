@@ -17,6 +17,7 @@ general:
   # Those values need to be filled if cockroachdb.enabled is false
   database:
     POSTGRES_URL: postgresql://voltaserve@your.database.host:26257/voltaserve
+    MIGRATIONS_DATABASE_URL: postgresql://root@your.database.host:26257/postgres
   # Those values need to be filled if redis.enabled is false
   redis:
     REDIS_ADDRESS: your.redis.instance
@@ -31,7 +32,7 @@ general:
     TOKEN_ACCESS_TOKEN_LIFETIME: 86400
     TOKEN_REFRESH_TOKEN_LIFETIME: 2592000
   limits:
-    #This one is consumed by conversion microservice and it determines if we want to download additional fonts during startup
+    #This one is consumed by conversion microservice, and it determines if we want to download additional fonts during startup
     ENABLE_INSTALLER: true
     LIMITS_FILE_UPLOAD_MB: 10000
     LIMITS_FILE_PROCESSING_MB: video:10000,*:1000

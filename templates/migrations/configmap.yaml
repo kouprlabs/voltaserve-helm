@@ -14,7 +14,7 @@ data:
     {{- end }}
   {{- end }}
   {{- if .Values.cockroachdb.enabled }}
-  POSTGRES_URL: postgresql://voltaserve@{{ .Release.Name }}-cockroachdb.{{ .Release.Namespace }}.{{ .Values.clusterDomain | default "cluster.local" }}:26257/voltaserve
+  DATABASE_URL: postgresql://root@{{ .Release.Name }}-cockroachdb.{{ .Release.Namespace }}.{{ .Values.clusterDomain | default "cluster.local" }}:26257/postgres
   {{- else }}
-  POSTGRES_URL: {{ .Values.general.database.POSTGRES_URL }}
+  DATABASE_URL: {{ .Values.general.database.MIGRATIONS_DATABASE_URL }}
   {{- end  }}
