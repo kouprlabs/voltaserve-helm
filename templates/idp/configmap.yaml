@@ -42,3 +42,8 @@ data:
   {{- end  }}
   TOKEN_ACCESS_TOKEN_LIFETIME: {{ .Values.general.jwt.TOKEN_ACCESS_TOKEN_LIFETIME | default 86400 | quote }}
   TOKEN_REFRESH_TOKEN_LIFETIME: {{ .Values.general.jwt.TOKEN_REFRESH_TOKEN_LIFETIME | default "2592000" | int | quote }}
+  PASSWORD_MIN_LENGTH: {{ .Values.general.passwordRequirements.PASSWORD_MIN_LENGTH | default 8 | quote }}
+  PASSWORD_MIN_LOWERCASE: {{ .Values.general.passwordRequirements.PASSWORD_MIN_LOWERCASE | default 1 | quote }}
+  PASSWORD_MIN_UPPERCASE: {{ .Values.general.passwordRequirements.PASSWORD_MIN_UPPERCASE | default 1 | quote }}
+  PASSWORD_MIN_NUMBERS: {{ .Values.general.passwordRequirements.PASSWORD_MIN_NUMBERS | default 1 | quote }}
+  PASSWORD_MIN_SYMBOLS: {{ .Values.general.passwordRequirements.PASSWORD_MIN_SYMBOLS | default 1 | quote }}

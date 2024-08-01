@@ -1,0 +1,33 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "voltaserve-migrations.fullname" . }}
+  labels:
+    {{- include "voltaserve-migrations.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  ttlSecondsAfterFinished: 600
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/migrations/configmap.yaml") . | sha256sum }}
+          {{- with (.Values.globals).podAnnotations }}
+            {{- toYaml . | nindent 8 }}
+          {{- end }}
+      labels:
+        {{- include "voltaserve-migrations.labels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: {{ include "voltaserve-migrations.fullname" . }}
+        image: {{ .Values.api.image.repository | default "voltaserve/migrations" }}:{{ .Values.api.image.tag | default .Chart.AppVersion }}
+        imagePullPolicy: {{ .Values.api.deployment.imagePullPolicy | default "IfNotPresent" }}
+        envsFrom:
+          - configMapRef:
+              name: {{ include "voltaserve-migrations.fullname" . }}
+      restartPolicy: OnFailure
+      {{- with (.Values.globals).nodeSelectors }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+  backoffLimit: 30

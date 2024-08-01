@@ -29,4 +29,5 @@ data:
   LIMITS_IMAGE_PREVIEW_MAX_WIDTH: {{ .Values.general.limits.LIMITS_IMAGE_PREVIEW_MAX_WIDTH | default 512 | quote }}
   LIMITS_IMAGE_PREVIEW_MAX_HEIGHT: {{ .Values.general.limits.LIMITS_IMAGE_PREVIEW_MAX_HEIGHT | default 512 | quote }}
   LIMITS_MULTIPART_BODY_LENGTH_LIMIT_MB: {{ .Values.general.limits.LIMITS_MULTIPART_BODY_LENGTH_LIMIT_MB | default 5000 | quote }}
+  ENABLE_INSTALLER: {{ .Values.general.limits.ENABLE_INSTALLER | default true | quote}}
 

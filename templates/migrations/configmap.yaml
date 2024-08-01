@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "voltaserve-migrations.fullname" . }}
+data:
+  {{- if .Values.api.envs }}
+    {{- range $k,$v := .Values.api.envs }}
+      {{ $k }}: {{ $v | quote }}
+    {{- end }}
+  {{- end }}
+  {{- if .Values.general.sharedEnvs }}
+    {{- range $k,$v := .Values.general.sharedEnvs }}
+      {{$k }}: {{ default "" $v | quote }}
+    {{- end }}
+  {{- end }}
+  {{- if .Values.cockroachdb.enabled }}
+  POSTGRES_URL: postgresql://voltaserve@{{ .Release.Name }}-cockroachdb.{{ .Release.Namespace }}.{{ .Values.clusterDomain | default "cluster.local" }}:26257/voltaserve
+  {{- else }}
+  POSTGRES_URL: {{ .Values.general.database.POSTGRES_URL }}
+  {{- end  }}

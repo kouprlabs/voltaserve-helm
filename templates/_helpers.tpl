@@ -48,6 +48,9 @@ We truncate the common name more because some Kubernetes name fields are limited
 {{- define "voltaserve-webdav.fullname" -}}
 {{- printf "%s-webdav" ( include "voltaserve.fullname" . | trunc 50 ) }}
 {{- end }}
+{{- define "voltaserve-migrations.fullname" -}}
+{{- printf "%s-migrations" ( include "voltaserve.fullname" . | trunc 50 ) }}
+{{- end }}
 
 {{/*
 Create chart name and version as used by the chart label.
@@ -98,6 +101,10 @@ Deployment specific labels
 {{ include "voltaserve.commonLabels" . }}
 {{ include "voltaserve-webdav.selectorLabels" . }}
 {{- end }}
+{{- define "voltaserve-migrations.labels" -}}
+{{ include "voltaserve.commonLabels" . }}
+{{ include "voltaserve-webdav.selectorLabels" . }}
+{{- end }}
 
 {{/*
 Selector labels
@@ -133,6 +140,10 @@ app.kubernetes.io/component: mosaic
 {{- define "voltaserve-webdav.selectorLabels" -}}
 {{ include "voltaserve.selectorLabels" . }}
 app.kubernetes.io/component: webdav
+{{- end }}
+{{- define "voltaserve-migrations.selectorLabels" -}}
+{{ include "voltaserve.selectorLabels" . }}
+app.kubernetes.io/component: migrations
 {{- end }}
 
 {{/*
