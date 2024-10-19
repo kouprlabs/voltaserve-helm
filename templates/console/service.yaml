@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "voltaserve-console.fullname" . }}
+  labels:
+    {{- include "voltaserve-console.labels" . | nindent 4 }}
+  {{- if or .Values.api.service.annotations (.Values.global).serviceAnnotations }}
+  annotations:
+  {{- with .Values.api.service.annotations }}
+    {{ toYaml . | indent 4 }}
+  {{- end }}
+  {{- with (.Values.globals).serviceAnnotations }}
+    {{ toYaml . | indent 4 }}
+  {{- end }}
+  {{- end }}
+spec:
+  ipFamilyPolicy: SingleStack
+  type: {{ .Values.api.service.type }}
+  clusterIP: "None"
+  ports:
+    - port: {{ .Values.api.service.port }}
+      targetPort: 8080
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "voltaserve-console.selectorLabels" . | nindent 6 }}

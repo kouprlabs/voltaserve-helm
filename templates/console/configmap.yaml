@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "voltaserve-console.fullname" . }}
+data:
+  {{- if .Values.api.envs }}
+    {{- range $k,$v := .Values.api.envs }}
+      {{ $k }}: {{ $v | quote }}
+    {{- end }}
+  {{- end }}
+  {{- if .Values.general.sharedEnvs }}
+    {{- range $k,$v := .Values.general.sharedEnvs }}
+      {{$k }}: {{ default "" $v | quote }}
+    {{- end }}
+  {{- end }}
+  CONVERSION_URL: http://{{ include "voltaserve-conversion.fullname" . }}.{{.Release.Namespace}}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:{{ .Values.conversion.service.port }}
+  LANGUAGE_URL: http://{{ include "voltaserve-language.fullname" . }}.{{.Release.Namespace}}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:{{ .Values.language.service.port }}
+  MOSAIC_URL: http://{{ include "voltaserve-mosaic.fullname" . }}.{{.Release.Namespace}}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:{{ .Values.mosaic.service.port }}
+  API_URL: http://{{ include "voltaserve-api.fullname" . }}.{{.Release.Namespace}}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:{{ .Values.api.service.port }}
+  IDP_URL: http://{{ include "voltaserve-idp.fullname" . }}.{{.Release.Namespace}}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:{{ .Values.idp.service.port }}
+  WEBDAV_URL: http://{{ include "voltaserve-webdav.fullname" . }}.{{.Release.Namespace}}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:{{ .Values.webdav.service.port }}
+  LOG_FORMAT: JSON
+  LOG_LEVEL: INFO
+  {{- if .Values.ui.ingress.enabled }}
+  PUBLIC_UI_URL: https://{{ .Values.ui.ingress.host }}
+  SECURITY_CORS_ORIGINS: https://{{ .Values.ui.ingress.host }}
+  {{- else }}
+  PUBLIC_UI_URL: {{ .Values.general.endpoint.PUBLIC_UI_URL }}
+  SECURITY_CORS_ORIGINS: {{ .Values.general.endpoint.PUBLIC_UI_URL }}
+  {{- end  }}
+  {{- if .Values.minio.enabled }}
+  S3_URL: {{ .Release.Name }}-minio.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:9000
+  S3_SECURE: "false"
+  S3_REGION: "us-east-1"
+  {{- else }}
+  S3_URL: {{ .Values.general.s3.S3_URL }}
+  S3_SECURE: {{ .Values.general.s3.S3_SECURE | default false | quote }}
+  S3_REGION: {{ .Values.general.s3.S3_REGION | default "us-east-1" | quote }}
+  {{- end  }}
+  {{- if .Values.redis.enabled }}
+  REDIS_ADDRESS: {{ .Release.Name }}-redis-master.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:{{ .Values.redis.master.service.ports.redis | default 6379 }}
+  {{- else }}
+  REDIS_ADDRESS: {{ .Values.general.redis.REDIS_ADDRESS }}
+  {{- end  }}
+  REDIS_DB: {{ .Values.general.redis.REDIS_DB | default 0 | quote }}
+  {{- if .Values.cockroachdb.enabled }}
+  POSTGRES_URL: postgresql://voltaserve@{{ .Release.Name }}-cockroachdb.{{ .Release.Namespace }}.{{ .Values.clusterDomain | default "cluster.local" }}:26257/voltaserve
+  {{- else }}
+  POSTGRES_URL: {{ .Values.general.database.POSTGRES_URL }}
+  {{- end  }}
+  {{- if .Values.meilisearch.enabled }}
+  SEARCH_URL: http://{{ .Release.Name }}-meilisearch.{{.Release.Namespace}}.svc.{{ .Values.clusterDomain | default "cluster.local" }}:{{ .Values.meilisearch.service.port | default 7700 }}
+  {{- else }}
+  SEARCH_URL: {{ .Values.general.search.SEARCH_URL }}
+  {{- end  }}
+  LIMITS_FILE_UPLOAD_MB: {{ .Values.general.limits.LIMITS_FILE_UPLOAD_MB | default 10000 | quote }}
+  LIMITS_FILE_PROCESSING_MB: {{ .Values.general.limits.LIMITS_FILE_PROCESSING_MB | default "video:10000,*:1000" | quote }}
+  DEFAULTS_WORKSPACE_STORAGE_CAPACITY_MB: {{ .Values.general.limits.DEFAULTS_WORKSPACE_STORAGE_CAPACITY_MB | default 100000 | quote }}

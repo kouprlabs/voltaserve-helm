@@ -30,6 +30,9 @@ We truncate the common name more because some Kubernetes name fields are limited
 {{- define "voltaserve-api.fullname" -}}
 {{- printf "%s-api" ( include "voltaserve.fullname" . | trunc 50 ) }}
 {{- end }}
+{{- define "voltaserve-console.fullname" -}}
+{{- printf "%s-console" ( include "voltaserve.fullname" . | trunc 50 ) }}
+{{- end }}
 {{- define "voltaserve-idp.fullname" -}}
 {{- printf "%s-idp" ( include "voltaserve.fullname" . | trunc 50 ) }}
 {{- end }}
@@ -77,6 +80,10 @@ Deployment specific labels
 {{ include "voltaserve.commonLabels" . }}
 {{ include "voltaserve-api.selectorLabels" . }}
 {{- end }}
+{{- define "voltaserve-console.labels" -}}
+{{ include "voltaserve.commonLabels" . }}
+{{ include "voltaserve-console.selectorLabels" . }}
+{{- end }}
 {{- define "voltaserve-conversion.labels" -}}
 {{ include "voltaserve.commonLabels" . }}
 {{ include "voltaserve-conversion.selectorLabels" . }}
@@ -116,6 +123,10 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- define "voltaserve-api.selectorLabels" -}}
 {{ include "voltaserve.selectorLabels" . }}
 app.kubernetes.io/component: api
+{{- end }}
+{{- define "voltaserve-console.selectorLabels" -}}
+{{ include "voltaserve.selectorLabels" . }}
+app.kubernetes.io/component: console
 {{- end }}
 {{- define "voltaserve-conversion.selectorLabels" -}}
 {{ include "voltaserve.selectorLabels" . }}

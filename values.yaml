@@ -17,7 +17,10 @@ general:
   # Those values need to be filled if cockroachdb.enabled is false
   database:
     POSTGRES_URL: postgresql://voltaserve@your.database.host:26257/voltaserve
-    MIGRATIONS_DATABASE_URL: postgresql://root@your.database.host:26257/postgres
+    POSTGRES_ENDPOINT: your.database.host
+    POSTGRES_PORT: 26257
+    POSTGRES_NAME: voltaserve(db name)
+    POSTGRES_USER: voltaserve
   # Those values need to be filled if redis.enabled is false
   redis:
     REDIS_ADDRESS: your.redis.instance
@@ -52,6 +55,8 @@ general:
   sharedEnvs: {}
 
   secrets:
+    database:
+      POSTGRES_PASSWORD: voltaserve
     jwt:
       SECURITY_JWT_SIGNING_KEY: null
     api:
@@ -85,6 +90,49 @@ api:
     tag: null
   service:
     port: 8080
+    type: ClusterIP
+    annotations:
+      {}
+  envs:
+    {}
+  deployment:
+    imagePullPolicy:
+    replicaCount: 1
+    podAnnotations:
+      {}
+    podLabels:
+      {}
+    livenessProbePath: null
+    readinessProbePath: null
+    security:
+      securityContext:
+        {}
+      podSecurityContext:
+        {}
+    resources:
+      {}
+    volumeMounts:
+      {}
+    volumes:
+      {}
+    nodeSelector:
+      {}
+    affinity:
+      {}
+    tolerations:
+      {}
+
+
+console:
+  logging:
+    level: INFO
+    format: JSON
+  existingSecret: null
+  image:
+    repository: null
+    tag: null
+  service:
+    port: 8086
     type: ClusterIP
     annotations:
       {}
@@ -398,7 +446,7 @@ minio:
 
 cockroachdb:
 # For test purposes we recommend below settings
-#  enabled: false
+#  enabled: true
 #  statefulset:
 #    replicas: 1
 #    env:
@@ -419,4 +467,13 @@ cockroachdb:
 meilisearch:
 # For test purposes we recommend below settings
 #  enabled: true
+  enabled: false
+
+postgresql:
+# For test purposes we recommend below settings
+#  enabled: true
+  auth:
+    username: voltaserve
+    password: voltaserve
+    database: voltaserve
   enabled: false
